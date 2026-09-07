@@ -32,8 +32,8 @@ export const ParameterPanel: React.FC = () => {
 
   return (
     <div
-      className={`w-80 h-full flex flex-col select-none z-10 transition-colors border-r ${
-        isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-white border-slate-200 text-slate-900'
+      className={`w-80 h-full flex flex-col select-none z-10 transition-colors border-r backdrop-blur-md ${
+        isDark ? 'bg-zinc-950/40 border-zinc-800/60 text-zinc-100' : 'bg-white/20 border-slate-200/60 text-slate-900'
       }`}
     >
       {/* Header */}

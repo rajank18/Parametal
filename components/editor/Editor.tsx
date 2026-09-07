@@ -37,10 +37,15 @@ export const Editor: React.FC = () => {
 
       {/* Main Workspace Body */}
       <div className="flex-1 flex overflow-hidden relative pb-14 md:pb-0">
-        {/* Left Parameter Panel: Desktop sidebar (w-80) / Mobile Drawer */}
+        {/* Full-bleed Center 3D Viewport */}
+        <main className="absolute inset-0 w-full h-full relative overflow-hidden">
+          <DynamicViewport />
+        </main>
+
+        {/* Left Parameter Panel: Desktop translucent sidebar (w-80) / Mobile Drawer */}
         <div
           className={`
-            fixed md:relative z-20 inset-y-0 left-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
+            absolute z-20 inset-y-0 left-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
             ${mobileTab === 'params' ? 'translate-x-0 w-80' : '-translate-x-full md:translate-x-0 w-80'}
           `}
         >
@@ -56,15 +61,10 @@ export const Editor: React.FC = () => {
           </div>
         </div>
 
-        {/* Center 3D Viewport */}
-        <main className="flex-1 h-full relative overflow-hidden">
-          <DynamicViewport />
-        </main>
-
-        {/* Right Properties Panel: Desktop sidebar (w-72) / Mobile Drawer */}
+        {/* Right Properties Panel: Desktop translucent sidebar (w-72) / Mobile Drawer */}
         <div
           className={`
-            fixed md:relative z-20 inset-y-0 right-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
+            absolute z-20 inset-y-0 right-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
             ${mobileTab === 'specs' ? 'translate-x-0 w-72' : 'translate-x-full md:translate-x-0 w-72'}
           `}
         >
