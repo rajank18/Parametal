@@ -71,7 +71,7 @@ export const Toolbar: React.FC = () => {
 
     return (
         <header
-            className={`h-12 sm:h-14 px-2 sm:px-4 flex items-center justify-between select-none z-20 transition-colors border-b ${isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-white border-slate-200 text-slate-900 shadow-sm'
+            className={`h-12 sm:h-14 px-2 sm:px-4 flex items-center justify-between select-none z-40 transition-colors border-b ${isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-white border-slate-200 text-slate-900 shadow-sm'
                 }`}
         >
             {/* Brand & Object Category Selector Dropdown */}
@@ -102,7 +102,7 @@ export const Toolbar: React.FC = () => {
                     {/* Dropdown Menu */}
                     {isDropdownOpen && (
                         <div
-                            className={`absolute top-full left-0 mt-1 sm:mt-1.5 w-48 sm:w-56 rounded-xl border shadow-xl p-1 sm:p-1.5 z-30 transition-all ${isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-100' : 'bg-white border-slate-200 text-slate-900'
+                            className={`absolute top-full left-0 mt-1 sm:mt-1.5 w-48 sm:w-56 rounded-xl border shadow-2xl p-1 sm:p-1.5 z-50 transition-all ${isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-100' : 'bg-white border-slate-200 text-slate-900'
                                 }`}
                         >
                             <div className={`px-2 py-1 text-[10px] font-mono uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>

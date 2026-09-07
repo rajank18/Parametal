@@ -40,7 +40,7 @@ export const Editor: React.FC = () => {
         {/* Left Parameter Panel: Desktop sidebar (w-80) / Mobile Drawer */}
         <div
           className={`
-            fixed md:relative z-30 inset-y-0 left-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
+            fixed md:relative z-20 inset-y-0 left-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
             ${mobileTab === 'params' ? 'translate-x-0 w-80' : '-translate-x-full md:translate-x-0 w-80'}
           `}
         >
@@ -48,7 +48,7 @@ export const Editor: React.FC = () => {
             {/* Mobile close button inside drawer */}
             <button
               onClick={() => setMobileTab('viewport')}
-              className="md:hidden absolute top-3 right-3 z-40 p-1.5 rounded-lg bg-zinc-800 text-zinc-300"
+              className="md:hidden absolute top-3 right-3 z-30 p-1.5 rounded-lg bg-zinc-800 text-zinc-300"
             >
               <X className="w-4 h-4" />
             </button>
@@ -64,7 +64,7 @@ export const Editor: React.FC = () => {
         {/* Right Properties Panel: Desktop sidebar (w-72) / Mobile Drawer */}
         <div
           className={`
-            fixed md:relative z-30 inset-y-0 right-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
+            fixed md:relative z-20 inset-y-0 right-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
             ${mobileTab === 'specs' ? 'translate-x-0 w-72' : 'translate-x-full md:translate-x-0 w-72'}
           `}
         >
