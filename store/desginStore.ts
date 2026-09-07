@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CanopyParameters, SeatingParameters, ControlPoint3D, DesignState, ObjectCategory, ThemeMode } from '../types/design';
+import { CanopyParameters, SeatingParameters, PartitionParameters, ControlPoint3D, DesignState, ObjectCategory, ThemeMode } from '../types/design';
 import { buildControlPointGrid } from '../geometry/curves';
 import { buildSeatingControlPoints } from '../geometry/seating';
 
@@ -54,9 +54,36 @@ export const DEFAULT_SEATING_PARAMETERS: SeatingParameters = {
     materialType: 'galvanized',
 };
 
+export const DEFAULT_PARTITION_PARAMETERS: PartitionParameters = {
+    panelWidth: 400,
+    panelHeight: 550,
+    panelDepth: 180,
+
+    horizontalCurve: 120,
+    verticalCurve: 90,
+
+    topRadius: 40,
+    bottomRadius: 40,
+
+    columns: 4,
+    rows: 4,
+
+    columnSpacing: 480,
+    rowSpacing: 520,
+
+    rotationVariation: 15,
+    depthVariation: 30,
+
+    postRadius: 8,
+    panelThickness: 2.0,
+    materialType: 'custom',
+    lightBulbs: true,
+};
+
 export const useDesignStore = create<ExtendedDesignState>((set, get) => ({
     parameters: { ...DEFAULT_CANOPY_PARAMETERS },
     seatingParameters: { ...DEFAULT_SEATING_PARAMETERS },
+    partitionParameters: { ...DEFAULT_PARTITION_PARAMETERS },
     controlPoints: buildControlPointGrid(DEFAULT_CANOPY_PARAMETERS),
     seatingControlPoints: buildSeatingControlPoints(DEFAULT_SEATING_PARAMETERS),
     selectedPointId: null,
@@ -90,6 +117,12 @@ export const useDesignStore = create<ExtendedDesignState>((set, get) => ({
                 seatingControlPoints: updatedPoints,
             };
         });
+    },
+
+    updatePartitionParameters: (newParams: Partial<PartitionParameters>) => {
+        set((state) => ({
+            partitionParameters: { ...state.partitionParameters, ...newParams },
+        }));
     },
 
     updateControlPoint: (id: string, position: [number, number, number]) => {

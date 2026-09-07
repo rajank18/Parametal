@@ -7,8 +7,10 @@ import { Sliders, Maximize2, Layers, Sun, RotateCcw } from 'lucide-react';
 export const ParameterPanel: React.FC = () => {
   const parameters = useDesignStore((s) => s.parameters);
   const seatingParameters = useDesignStore((s) => s.seatingParameters);
+  const partitionParameters = useDesignStore((s) => s.partitionParameters);
   const updateParameters = useDesignStore((s) => s.updateParameters);
   const updateSeatingParameters = useDesignStore((s) => s.updateSeatingParameters);
+  const updatePartitionParameters = useDesignStore((s) => s.updatePartitionParameters);
   const resetToDefaults = useDesignStore((s) => s.resetToDefaults);
   const activeTab = useDesignStore((s) => s.activeTab);
   const setActiveTab = useDesignStore((s) => s.setActiveTab);
@@ -302,7 +304,152 @@ export const ParameterPanel: React.FC = () => {
           </>
         )}
 
-        {activeTab === 'parameters' && !isSeating && (
+        {/* Partition Screen Controls */}
+        {activeTab === 'parameters' && activeCategory === 'partition' && (
+          <div className="space-y-6">
+            {/* Grid Array & Repetition */}
+            <div className="space-y-4">
+              <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                Array & Structure Grid
+              </h3>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Columns</span>
+                  <span className="font-mono text-emerald-500 font-bold">{partitionParameters.columns}</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  step="1"
+                  value={partitionParameters.columns}
+                  onChange={(e) => updatePartitionParameters({ columns: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Rows</span>
+                  <span className="font-mono text-emerald-500 font-bold">{partitionParameters.rows}</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="8"
+                  step="1"
+                  value={partitionParameters.rows}
+                  onChange={(e) => updatePartitionParameters({ rows: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Column Spacing</span>
+                  <span className="font-mono text-emerald-500 font-bold">{partitionParameters.columnSpacing} mm</span>
+                </div>
+                <input
+                  type="range"
+                  min="300"
+                  max="800"
+                  step="10"
+                  value={partitionParameters.columnSpacing}
+                  onChange={(e) => updatePartitionParameters({ columnSpacing: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Row Spacing</span>
+                  <span className="font-mono text-emerald-500 font-bold">{partitionParameters.rowSpacing} mm</span>
+                </div>
+                <input
+                  type="range"
+                  min="350"
+                  max="900"
+                  step="10"
+                  value={partitionParameters.rowSpacing}
+                  onChange={(e) => updatePartitionParameters({ rowSpacing: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+            </div>
+
+            {/* Panel Curvature & Variations */}
+            <div className={`space-y-4 pt-2 border-t ${isDark ? 'border-zinc-800' : 'border-slate-200'}`}>
+              <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                Sculptural Panel Curvature
+              </h3>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Panel Depth Bulge</span>
+                  <span className="font-mono text-emerald-500 font-bold">{partitionParameters.panelDepth} mm</span>
+                </div>
+                <input
+                  type="range"
+                  min="50"
+                  max="350"
+                  step="5"
+                  value={partitionParameters.panelDepth}
+                  onChange={(e) => updatePartitionParameters({ panelDepth: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Horizontal Curve</span>
+                  <span className="font-mono text-emerald-500 font-bold">{partitionParameters.horizontalCurve} mm</span>
+                </div>
+                <input
+                  type="range"
+                  min="20"
+                  max="250"
+                  step="5"
+                  value={partitionParameters.horizontalCurve}
+                  onChange={(e) => updatePartitionParameters({ horizontalCurve: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Rotation Variation</span>
+                  <span className="font-mono text-emerald-500 font-bold">{partitionParameters.rotationVariation}°</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="45"
+                  step="1"
+                  value={partitionParameters.rotationVariation}
+                  onChange={(e) => updatePartitionParameters({ rotationVariation: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'parameters' && !isSeating && activeCategory !== 'partition' && (
           <>
             <div className="space-y-4">
               <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>

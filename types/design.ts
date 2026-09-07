@@ -66,6 +66,32 @@ export interface SeatingParameters {
   materialType: MaterialType;
 }
 
+export interface PartitionParameters {
+  panelWidth: number;          // Default 400 mm
+  panelHeight: number;         // Default 550 mm
+  panelDepth: number;          // Default 180 mm
+
+  horizontalCurve: number;     // Default 120 mm
+  verticalCurve: number;       // Default 90 mm
+
+  topRadius: number;           // Default 40 mm
+  bottomRadius: number;        // Default 40 mm
+
+  columns: number;             // Default 4
+  rows: number;                // Default 4
+
+  columnSpacing: number;       // Default 480 mm
+  rowSpacing: number;          // Default 520 mm
+
+  rotationVariation: number;   // Default 15 deg
+  depthVariation: number;      // Default 30 mm
+
+  postRadius: number;          // Default 8 mm
+  panelThickness: number;      // Default 2.0 mm
+  materialType: MaterialType;  // Default 'custom' (copper/bronze)
+  lightBulbs: boolean;         // Default true
+}
+
 export interface ControlPoint3D {
   id: string;
   label: string;
@@ -84,6 +110,7 @@ export interface SeatingMeshOutput {
 export interface DesignState {
   parameters: CanopyParameters;
   seatingParameters: SeatingParameters;
+  partitionParameters: PartitionParameters;
   controlPoints: ControlPoint3D[];
   seatingControlPoints: ControlPoint3D[];
   selectedPointId: string | null;
@@ -99,6 +126,7 @@ export interface DesignState {
   // Actions
   updateParameters: (params: Partial<CanopyParameters>) => void;
   updateSeatingParameters: (params: Partial<SeatingParameters>) => void;
+  updatePartitionParameters: (params: Partial<PartitionParameters>) => void;
   updateControlPoint: (id: string, position: [number, number, number]) => void;
   updateSeatingControlPoint: (id: string, position: [number, number, number]) => void;
   setSelectedPoint: (id: string | null) => void;

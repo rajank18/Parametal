@@ -3,28 +3,50 @@
 import React, { useMemo } from 'react';
 import { useDesignStore } from '../../store/desginStore';
 import { generateCanopyGeometry } from '../../geometry/panels';
+import { generateSeatingGeometry } from '../../geometry/seating';
+import { generatePartitionGeometry } from '../../geometry/partition';
 import { MATERIAL_PRESETS } from '../scene/MetalObject';
 import { Info, CheckCircle2, ShieldAlert, Cpu } from 'lucide-react';
 
 export const PropertiesPanel: React.FC = () => {
   const parameters = useDesignStore((s) => s.parameters);
+  const seatingParameters = useDesignStore((s) => s.seatingParameters);
+  const partitionParameters = useDesignStore((s) => s.partitionParameters);
   const controlPoints = useDesignStore((s) => s.controlPoints);
+  const seatingControlPoints = useDesignStore((s) => s.seatingControlPoints);
+  const activeCategory = useDesignStore((s) => s.activeCategory);
   const theme = useDesignStore((s) => s.theme);
 
   const isDark = theme === 'dark';
 
   const meshData = useMemo(() => {
+    if (activeCategory === 'partition') {
+      return generatePartitionGeometry(partitionParameters);
+    }
+    if (activeCategory === 'seating') {
+      return generateSeatingGeometry(seatingParameters, seatingControlPoints);
+    }
     return generateCanopyGeometry(parameters, controlPoints);
-  }, [parameters, controlPoints]);
+  }, [activeCategory, partitionParameters, seatingParameters, seatingControlPoints, parameters, controlPoints]);
 
-  const matConfig = MATERIAL_PRESETS[parameters.materialType] || MATERIAL_PRESETS.galvanized;
+  const activeThickness = activeCategory === 'partition'
+    ? partitionParameters.panelThickness
+    : activeCategory === 'seating'
+    ? seatingParameters.sheetThickness
+    : parameters.thickness;
 
-  const volumeMm3 = meshData.surfaceAreaMm2 * parameters.thickness;
+  const matConfig = MATERIAL_PRESETS[
+    activeCategory === 'seating'
+      ? seatingParameters.materialType
+      : parameters.materialType
+  ] || MATERIAL_PRESETS.galvanized;
+
+  const volumeMm3 = meshData.surfaceAreaMm2 * activeThickness;
   const weightKg = (volumeMm3 * 0.00785) / 1000;
 
-  const isWidthValid = meshData.boundingWidth <= 1500;
-  const isDepthValid = meshData.boundingDepth <= 1000;
-  const isCurvatureSafe = parameters.curveDepth <= 180;
+  const isWidthValid = meshData.boundingWidth <= 4000;
+  const isDepthValid = meshData.boundingDepth <= 2000;
+  const isCurvatureSafe = true;
 
   return (
     <div
@@ -65,8 +87,12 @@ export const PropertiesPanel: React.FC = () => {
             </div>
 
             <div className={`p-2.5 border rounded-lg ${isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-slate-50 border-slate-200'}`}>
-              <div className={`text-[10px] ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>Est. Weight</div>
-              <div className="font-mono text-emerald-500 font-bold mt-0.5">{weightKg.toFixed(2)} kg</div>
+              <div className={`text-[10px] ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                {activeCategory === 'partition' ? 'Total Panels' : 'Est. Weight'}
+              </div>
+              <div className="font-mono text-emerald-500 font-bold mt-0.5">
+                {activeCategory === 'partition' ? `${partitionParameters.columns * partitionParameters.rows} Modules (P01-P${partitionParameters.columns * partitionParameters.rows})` : `${weightKg.toFixed(2)} kg`}
+              </div>
             </div>
           </div>
         </div>

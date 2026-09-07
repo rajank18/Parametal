@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { useDesignStore } from '../../store/desginStore';
 import { generateCanopyGeometry, generateBodyGeometry } from '../../geometry/panels';
 import { generateSeatingGeometry } from '../../geometry/seating';
+import { generatePartitionGeometry } from '../../geometry/partition';
 import { MaterialConfig, MaterialType } from '../../types/design';
 
 export const MATERIAL_PRESETS: Record<MaterialType, MaterialConfig> = {
@@ -44,6 +45,7 @@ export const MATERIAL_PRESETS: Record<MaterialType, MaterialConfig> = {
 export const MetalObject: React.FC = () => {
   const parameters = useDesignStore((s) => s.parameters);
   const seatingParameters = useDesignStore((s) => s.seatingParameters);
+  const partitionParameters = useDesignStore((s) => s.partitionParameters);
   const controlPoints = useDesignStore((s) => s.controlPoints);
   const seatingControlPoints = useDesignStore((s) => s.seatingControlPoints);
   const wireframe = useDesignStore((s) => s.wireframe);
@@ -62,6 +64,11 @@ export const MetalObject: React.FC = () => {
   const seatingData = useMemo(() => {
     return generateSeatingGeometry(seatingParameters, seatingControlPoints);
   }, [seatingParameters, seatingControlPoints]);
+
+  // Partition Screen Geometry
+  const partitionData = useMemo(() => {
+    return generatePartitionGeometry(partitionParameters);
+  }, [partitionParameters]);
 
   const matConfig = MATERIAL_PRESETS[parameters.materialType] || MATERIAL_PRESETS.galvanized;
   const seatingMatConfig = MATERIAL_PRESETS[seatingParameters.materialType] || MATERIAL_PRESETS.galvanized;
@@ -135,18 +142,46 @@ export const MetalObject: React.FC = () => {
     );
   }
 
-  // Render Partition Screen
+  // Render Architectural Partition Screen Array
   if (activeCategory === 'partition') {
     return (
       <group position={[0, 0, 0]}>
-        <mesh position={[-0.35, 0.9, 0.05]} rotation={[0, 0.15, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 1.8, 0.015]} />
-          <meshStandardMaterial color={matConfig.color} roughness={matConfig.roughness} metalness={matConfig.metalness} wireframe={wireframe} />
+        {/* Vertical Structural Posts/Rods */}
+        <mesh geometry={partitionData.postsGeometry} castShadow receiveShadow>
+          <meshStandardMaterial
+            color="#9a5832"
+            roughness={0.35}
+            metalness={0.85}
+          />
         </mesh>
-        <mesh position={[0.35, 0.9, -0.05]} rotation={[0, -0.15, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 1.8, 0.015]} />
-          <meshStandardMaterial color={matConfig.color} roughness={matConfig.roughness} metalness={matConfig.metalness} wireframe={wireframe} />
-        </mesh>
+
+        {/* Arrayed Double-Curved Sheet Metal Panels */}
+        {partitionData.panels.map((p) => (
+          <group key={p.id} position={p.position} rotation={[0, (p.rotationY * Math.PI) / 180, 0]}>
+            <mesh geometry={p.geometry} castShadow receiveShadow>
+              <meshPhysicalMaterial
+                color="#b86b35"
+                roughness={0.4}
+                metalness={0.75}
+                clearcoat={0.3}
+                clearcoatRoughness={0.2}
+                wireframe={wireframe}
+                side={THREE.DoubleSide}
+              />
+            </mesh>
+
+            {/* Internal Warm Ambient Light Node */}
+            {partitionParameters.lightBulbs && (
+              <group position={[0, 0, 0]}>
+                <mesh position={[0, 0, 0.02]}>
+                  <sphereGeometry args={[0.015, 12, 12]} />
+                  <meshBasicMaterial color="#ffc107" />
+                </mesh>
+                <pointLight color="#ffab00" intensity={1.8} distance={0.7} decay={2} />
+              </group>
+            )}
+          </group>
+        ))}
       </group>
     );
   }
