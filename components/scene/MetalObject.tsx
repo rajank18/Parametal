@@ -214,8 +214,6 @@ export const MetalObject: React.FC = () => {
           penumbra={0.8}
           distance={3.5}
           decay={1.8}
-          castShadow
-          shadow-bias={-0.0001}
         />
 
         <pointLight

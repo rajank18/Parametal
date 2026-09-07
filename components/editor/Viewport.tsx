@@ -124,21 +124,11 @@ export const Viewport: React.FC = () => {
                         <meshBasicMaterial color={isDark ? '#09090b' : '#ffffff'} />
                     </mesh>
 
-                    {/* Blender-Quality Studio Floor Shadow Receiver Plane */}
+                    {/* Studio Floor Directional Shadow Receiver Plane */}
                     <mesh position={[0, -0.0005, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
                         <planeGeometry args={[20, 20]} />
-                        <shadowMaterial opacity={isDark ? 0.75 : 0.25} />
+                        <shadowMaterial opacity={isDark ? 0.75 : 0.35} />
                     </mesh>
-
-                    {/* Contact Ground Shadow Ambient Occlusion */}
-                    <ContactShadows
-                        position={[0, 0, 0]}
-                        opacity={isDark ? 0.9 : 0.45}
-                        scale={7}
-                        blur={1.8}
-                        far={3}
-                        resolution={1024}
-                    />
 
                     {/* Floor Grid at Y=0 */}
                     <Grid
