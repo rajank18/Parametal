@@ -13,10 +13,16 @@ const CameraPresetController: React.FC = () => {
     const activeCategory = useDesignStore((s) => s.activeCategory);
     const { camera } = useThree();
     const controlsRef = useRef<OrbitControlsImpl>(null);
+    const [autoRotate, setAutoRotate] = React.useState(true);
 
     const isSeating = activeCategory === 'seating';
     const targetY = isSeating ? 0.45 : 0.75;
     const initDist = isSeating ? 2.1 : 1.9;
+
+    // Reset auto-rotate whenever the object category changes
+    useEffect(() => {
+        setAutoRotate(true);
+    }, [activeCategory]);
 
     useEffect(() => {
         if (!controlsRef.current) return;
@@ -51,7 +57,18 @@ const CameraPresetController: React.FC = () => {
         controlsRef.current.update();
     }, [cameraPreset, activeCategory, camera, targetY, initDist]);
 
-    return <OrbitControls ref={controlsRef} makeDefault minDistance={0.5} maxDistance={5} target={[0, targetY, 0]} />;
+    return (
+        <OrbitControls
+            ref={controlsRef}
+            makeDefault
+            minDistance={0.5}
+            maxDistance={5}
+            target={[0, targetY, 0]}
+            autoRotate={autoRotate}
+            autoRotateSpeed={1.5}
+            onStart={() => setAutoRotate(false)}
+        />
+    );
 };
 
 export const Viewport: React.FC = () => {
