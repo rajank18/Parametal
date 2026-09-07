@@ -28,7 +28,7 @@ export const Editor: React.FC = () => {
 
   return (
     <div
-      className={`w-screen h-screen flex flex-col overflow-hidden font-sans transition-colors ${
+      className={`w-screen h-[100dvh] flex flex-col overflow-hidden font-sans transition-colors ${
         isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-slate-50 text-slate-900'
       }`}
     >
@@ -36,7 +36,7 @@ export const Editor: React.FC = () => {
       <Toolbar />
 
       {/* Main Workspace Body */}
-      <div className="flex-1 flex overflow-hidden relative">
+      <div className="flex-1 flex overflow-hidden relative pb-14 md:pb-0">
         {/* Left Parameter Panel: Desktop sidebar (w-80) / Mobile Drawer */}
         <div
           className={`
@@ -44,7 +44,7 @@ export const Editor: React.FC = () => {
             ${mobileTab === 'params' ? 'translate-x-0 w-80' : '-translate-x-full md:translate-x-0 w-80'}
           `}
         >
-          <div className="h-full relative shadow-2xl md:shadow-none">
+          <div className="h-full relative shadow-2xl md:shadow-none pb-14 md:pb-0">
             {/* Mobile close button inside drawer */}
             <button
               onClick={() => setMobileTab('viewport')}
@@ -68,7 +68,7 @@ export const Editor: React.FC = () => {
             ${mobileTab === 'specs' ? 'translate-x-0 w-72' : 'translate-x-full md:translate-x-0 w-72'}
           `}
         >
-          <div className="h-full relative shadow-2xl md:shadow-none">
+          <div className="h-full relative shadow-2xl md:shadow-none pb-14 md:pb-0">
             {/* Mobile close button inside drawer */}
             <button
               onClick={() => setMobileTab('viewport')}
@@ -81,9 +81,9 @@ export const Editor: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Bottom Docking Navigation Bar */}
-      <nav className={`md:hidden flex items-center justify-around h-14 border-t z-40 px-2 transition-colors ${
-        isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-400' : 'bg-white border-slate-200 text-slate-600'
+      {/* Mobile Fixed Bottom Docking Navigation Bar */}
+      <nav className={`fixed bottom-0 left-0 right-0 md:hidden flex items-center justify-around h-14 border-t z-50 px-2 transition-colors ${
+        isDark ? 'bg-zinc-950/95 border-zinc-800 text-zinc-400 backdrop-blur-md' : 'bg-white/95 border-slate-200 text-slate-600 backdrop-blur-md'
       }`}>
         <button
           onClick={() => setMobileTab('params')}
