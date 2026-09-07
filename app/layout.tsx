@@ -16,7 +16,12 @@ export const metadata: Metadata = {
   title: "Parametal",
   description: "Shape. Structure. Fabricate.",
   icons: {
-    icon: "/logo.ico",
+    icon: [
+      { url: "/logo.ico", type: "image/x-icon" },
+      { url: "/favicon.ico", type: "image/x-icon" },
+    ],
+    shortcut: "/logo.ico",
+    apple: "/logo.ico",
   },
 };
 
