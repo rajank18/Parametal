@@ -8,9 +8,9 @@ import { Box, Image as ImageIcon, Download, Target, Camera, Sun, Moon, ChevronDo
 export const CATEGORY_ICONS: Record<ObjectCategory, { name: string; icon: React.ComponentType<{ className?: string }> }> = {
     lamp: { name: ' Lamp', icon: Lightbulb },
     seating: { name: 'Seating / Chair', icon: Armchair },
+    partition: { name: 'Partition Screen', icon: Grid },
     table: { name: 'Table', icon: Table },
     storage: { name: 'Storage Unit', icon: Package },
-    partition: { name: 'Partition Screen', icon: Grid },
     wall_mounted: { name: 'Wall-Mounted', icon: Layout },
 };
 
