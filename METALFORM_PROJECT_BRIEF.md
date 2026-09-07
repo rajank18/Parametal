@@ -124,7 +124,7 @@ Each object family should reuse the same fundamental concepts:
 
 ------------------------------------------------------------------------
 
-# 5. Priority: LIGHT / LAMP
+# 5. Priority:  LAMP
 
 The **Light/Lamp is the first product to implement**.
 

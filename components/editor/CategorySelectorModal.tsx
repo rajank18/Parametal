@@ -9,59 +9,59 @@ export const CATEGORIES: {
   id: ObjectCategory;
   name: string;
   tagline: string;
-  icon: React.ElementType;
+  icon: React.ComponentType<{ className?: string }>;
   description: string;
   badge?: string;
 }[] = [
-  {
-    id: 'lamp',
-    name: 'Light / Lamp',
-    tagline: 'Procedural Sculptural Floor Lamp',
-    icon: Lightbulb,
-    description: 'Curved sheet-metal skin canopy with standing conical pedestal and warm interior lighting.',
-    badge: 'Core Engine Ready',
-  },
-  {
-    id: 'seating',
-    name: 'Seating / Chair',
-    tagline: 'Modular Sheet Metal Lounge Chair',
-    icon: Armchair,
-    description: 'Ergonomic curved metal seat & backrest panels connected by mechanical joinery brackets.',
-    badge: 'New Template',
-  },
-  {
-    id: 'table',
-    name: 'Table',
-    tagline: 'Parametric Sheet Metal Work Table',
-    icon: Table,
-    description: 'Folded sheet-metal tabletop with parametric leg flanges and perimeter structural stiffeners.',
-    badge: 'New Template',
-  },
-  {
-    id: 'storage',
-    name: 'Storage',
-    tagline: 'Modular Metal Credenza & Shelving',
-    icon: Package,
-    description: 'Parametric sheet-metal box modules, door panels, and L-bracket structural frame.',
-    badge: 'New Template',
-  },
-  {
-    id: 'partition',
-    name: 'Partition Screen',
-    tagline: 'Curved Sheet Metal Room Divider',
-    icon: Grid,
-    description: 'Self-standing curved perforated metal screen panels with repeating joinery logic.',
-    badge: 'New Template',
-  },
-  {
-    id: 'wall_mounted',
-    name: 'Wall-Mounted Object',
-    tagline: 'Sculptural Wall Sconce & Shelf',
-    icon: Layout,
-    description: 'Folded sheet-metal wall-hung lighting sconce and floating architectural shelving unit.',
-    badge: 'New Template',
-  },
-];
+    {
+      id: 'lamp',
+      name: ' Lamp',
+      tagline: 'Procedural Sculptural Floor Lamp',
+      icon: Lightbulb,
+      description: 'Curved sheet-metal skin canopy with standing conical pedestal and warm interior lighting.',
+      badge: 'Core Engine Ready',
+    },
+    {
+      id: 'seating',
+      name: 'Seating / Chair',
+      tagline: 'Modular Sheet Metal Lounge Chair',
+      icon: Armchair,
+      description: 'Ergonomic curved metal seat & backrest panels connected by mechanical joinery brackets.',
+      badge: 'New Template',
+    },
+    {
+      id: 'table',
+      name: 'Table',
+      tagline: 'Parametric Sheet Metal Work Table',
+      icon: Table,
+      description: 'Folded sheet-metal tabletop with parametric leg flanges and perimeter structural stiffeners.',
+      badge: 'New Template',
+    },
+    {
+      id: 'storage',
+      name: 'Storage',
+      tagline: 'Modular Metal Credenza & Shelving',
+      icon: Package,
+      description: 'Parametric sheet-metal box modules, door panels, and L-bracket structural frame.',
+      badge: 'New Template',
+    },
+    {
+      id: 'partition',
+      name: 'Partition Screen',
+      tagline: 'Curved Sheet Metal Room Divider',
+      icon: Grid,
+      description: 'Self-standing curved perforated metal screen panels with repeating joinery logic.',
+      badge: 'New Template',
+    },
+    {
+      id: 'wall_mounted',
+      name: 'Wall-Mounted Object',
+      tagline: 'Sculptural Wall Sconce & Shelf',
+      icon: Layout,
+      description: 'Folded sheet-metal wall-hung lighting sconce and floating architectural shelving unit.',
+      badge: 'New Template',
+    },
+  ];
 
 export const CategorySelectorModal: React.FC = () => {
   const isCategoryModalOpen = useDesignStore((s) => s.isCategoryModalOpen);
@@ -82,9 +82,8 @@ export const CategorySelectorModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div
-        className={`w-full max-w-3xl rounded-2xl border shadow-xl overflow-hidden flex flex-col max-h-[85vh] transition-colors ${
-          isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-white border-slate-200 text-slate-900'
-        }`}
+        className={`w-full max-w-3xl rounded-2xl border shadow-xl overflow-hidden flex flex-col max-h-[85vh] transition-colors ${isDark ? 'bg-zinc-950 border-zinc-800 text-zinc-100' : 'bg-white border-slate-200 text-slate-900'
+          }`}
       >
         {/* Modal Header */}
         <div className={`px-6 py-5 border-b flex items-center justify-between ${isDark ? 'border-zinc-800' : 'border-slate-200'}`}>
@@ -97,9 +96,8 @@ export const CategorySelectorModal: React.FC = () => {
 
           <button
             onClick={() => setIsCategoryModalOpen(false)}
-            className={`p-2 rounded-lg border transition-colors ${
-              isDark ? 'border-zinc-800 hover:bg-zinc-900 text-zinc-400' : 'border-slate-200 hover:bg-slate-100 text-slate-500'
-            }`}
+            className={`p-2 rounded-lg border transition-colors ${isDark ? 'border-zinc-800 hover:bg-zinc-900 text-zinc-400' : 'border-slate-200 hover:bg-slate-100 text-slate-500'
+              }`}
           >
             <X className="w-4 h-4" />
           </button>
@@ -115,27 +113,25 @@ export const CategorySelectorModal: React.FC = () => {
               <div
                 key={cat.id}
                 onClick={() => handleSelect(cat.id)}
-                className={`group relative p-4 rounded-xl border cursor-pointer transition-all flex flex-col justify-between ${
-                  isSelected
+                className={`group relative p-4 rounded-xl border cursor-pointer transition-all flex flex-col justify-between ${isSelected
                     ? isDark
                       ? 'border-emerald-500 bg-emerald-950/20 ring-1 ring-emerald-500'
                       : 'border-emerald-500 bg-emerald-50/60 ring-1 ring-emerald-500'
                     : isDark
-                    ? 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900'
-                    : 'border-slate-200 bg-slate-50/50 hover:border-slate-300 hover:bg-slate-100'
-                }`}
+                      ? 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900'
+                      : 'border-slate-200 bg-slate-50/50 hover:border-slate-300 hover:bg-slate-100'
+                  }`}
               >
                 <div>
                   <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors ${
-                      isSelected
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors ${isSelected
                         ? 'bg-emerald-500 text-zinc-950 font-bold'
                         : isDark
-                        ? 'bg-zinc-800 text-emerald-400'
-                        : 'bg-white border border-slate-200 text-emerald-600'
-                    }`}
+                          ? 'bg-zinc-800 text-emerald-400'
+                          : 'bg-white border border-slate-200 text-emerald-600'
+                      }`}
                   >
-                    <IconComp className="w-5 h-5" />
+                    <cat.icon className="w-5 h-5" />
                   </div>
 
                   <h3 className="text-sm font-bold group-hover:text-emerald-500 transition-colors">
@@ -150,9 +146,8 @@ export const CategorySelectorModal: React.FC = () => {
                   <span className={isSelected ? 'text-emerald-500 font-bold' : isDark ? 'text-zinc-500' : 'text-slate-400'}>
                     {isSelected ? 'Active' : 'Select'}
                   </span>
-                  <ArrowRight className={`w-3.5 h-3.5 transition-transform group-hover:translate-x-1 ${
-                    isSelected ? 'text-emerald-500' : isDark ? 'text-zinc-500' : 'text-slate-400'
-                  }`} />
+                  <ArrowRight className={`w-3.5 h-3.5 transition-transform group-hover:translate-x-1 ${isSelected ? 'text-emerald-500' : isDark ? 'text-zinc-500' : 'text-slate-400'
+                    }`} />
                 </div>
               </div>
             );
@@ -160,9 +155,8 @@ export const CategorySelectorModal: React.FC = () => {
         </div>
 
         {/* Modal Footer */}
-        <div className={`px-6 py-4 border-t flex items-center justify-end ${
-          isDark ? 'border-zinc-800 bg-zinc-900/30' : 'border-slate-200 bg-slate-50'
-        }`}>
+        <div className={`px-6 py-4 border-t flex items-center justify-end ${isDark ? 'border-zinc-800 bg-zinc-900/30' : 'border-slate-200 bg-slate-50'
+          }`}>
           <button
             onClick={() => setIsCategoryModalOpen(false)}
             className="px-5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs transition-colors"

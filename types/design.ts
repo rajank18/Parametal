@@ -93,6 +93,7 @@ export interface DesignState {
   activeTab: 'parameters' | 'material' | 'lighting' | 'fabrication';
   theme: ThemeMode;
   activeCategory: ObjectCategory;
+  isCategoryModalOpen: boolean;
   studioLightRotation: number;
   
   // Actions

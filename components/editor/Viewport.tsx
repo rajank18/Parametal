@@ -80,14 +80,14 @@ export const Viewport: React.FC = () => {
             <Canvas
                 shadows
                 camera={{ position: [1.6, 1.0, 2.1], fov: 45 }}
-                gl={{ antialias: true, alpha: false }}
+                gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
             >
                 <color attach="background" args={[isDark ? '#09090b' : '#ffffff']} />
 
                 {/* 360° Studio Lighting Rig with Bright White Lights */}
                 <hemisphereLight
-                    skyColor="#ffffff"
-                    groundColor={isDark ? '#ffffffff' : '#e2e8f0'}
+                    color="#ffffff"
+                    groundColor={isDark ? '#09090b' : '#e2e8f0'}
                     intensity={isDark ? 0.6 : 0.9}
                 />
 
