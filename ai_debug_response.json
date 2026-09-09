@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-09-09T07:51:20.589Z",
+  "visionRawText": "{\n  \"topology\": \"revolved\",\n  \"objectType\": \"potted plant\",\n  \"confidence\": 0.98,\n  \"dimensions\": {\n    \"width\": 450,\n    \"depth\": 450,\n    \"height\": 480\n  },\n  \"features\": \"1. Major Physical Components: Variegated green-and-white leafy plant (Aglaonema variety), organic soil substrate, dual-textured ceramic pot (smooth wavy upper section and ribbed lower section), and a dark-colored flat table surface. 2. Planar vs Bent vs Curved: The table is a planar flat surface; the plant leaves are organic curved surfaces; the pot is a curved surface of revolution (revolved body",
+  "successfulModel": "nvidia/nemotron-3.5-lightning:free",
+  "repairAttempts": 0,
+  "isLowConfidence": false,
+  "finalData": {
+    "activeCategory": "sculptural"
+  }
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "fixture-01-table",
+    "name": "Rectangular Coffee Table",
+    "expectedTopology": "prismatic_assembly",
+    "expectedObjectType": "table",
+    "expectedComponents": ["prismatic_slab", "support_legs"]
+  },
+  {
+    "id": "fixture-02-desk",
+    "name": "Minimalist Work Desk",
+    "expectedTopology": "prismatic_assembly",
+    "expectedObjectType": "table",
+    "expectedComponents": ["prismatic_slab", "support_legs"]
+  },
+  {
+    "id": "fixture-03-laptop",
+    "name": "Laptop Computer",
+    "expectedTopology": "prismatic_assembly",
+    "expectedObjectType": "electronics",
+    "expectedComponents": ["prismatic_slab"]
+  },
+  {
+    "id": "fixture-04-bench",
+    "name": "Orthogonal Metal Bench",
+    "expectedTopology": "prismatic_assembly",
+    "expectedObjectType": "seating",
+    "expectedComponents": ["prismatic_slab", "support_legs"]
+  },
+  {
+    "id": "fixture-05-vase",
+    "name": "Ceramic Fluted Vase",
+    "expectedTopology": "revolved",
+    "expectedObjectType": "container",
+    "expectedComponents": ["revolved_body"]
+  },
+  {
+    "id": "fixture-06-bottle",
+    "name": "Cylindrical Bottle",
+    "expectedTopology": "revolved",
+    "expectedObjectType": "container",
+    "expectedComponents": ["revolved_body"]
+  },
+  {
+    "id": "fixture-07-bowl",
+    "name": "Spun Metal Bowl",
+    "expectedTopology": "revolved",
+    "expectedObjectType": "container",
+    "expectedComponents": ["revolved_body"]
+  },
+  {
+    "id": "fixture-08-teapot",
+    "name": "Metal Teapot with Handle & Spout",
+    "expectedTopology": "revolved",
+    "expectedObjectType": "container",
+    "expectedComponents": ["revolved_body"]
+  },
+  {
+    "id": "fixture-09-ribbon-chair",
+    "name": "Continuous Ribbon Sheet Chair",
+    "expectedTopology": "continuous_sheet",
+    "expectedObjectType": "seating",
+    "expectedComponents": ["bent_sheet"]
+  },
+  {
+    "id": "fixture-10-sheet-table",
+    "name": "Sculptural C-Shape Side Table",
+    "expectedTopology": "continuous_sheet",
+    "expectedObjectType": "table",
+    "expectedComponents": ["bent_sheet"]
+  },
+  {
+    "id": "fixture-11-partition",
+    "name": "Modular Double-Curved Screen",
+    "expectedTopology": "continuous_sheet",
+    "expectedObjectType": "partition",
+    "expectedComponents": ["repeated_module"]
+  },
+  {
+    "id": "fixture-12-curved-panel",
+    "name": "Architectural Acoustic Metal Panel",
+    "expectedTopology": "continuous_sheet",
+    "expectedObjectType": "wall_mounted",
+    "expectedComponents": ["curved_sheet_panel"]
+  }
+]

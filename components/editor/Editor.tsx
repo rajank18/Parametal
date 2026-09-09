@@ -26,6 +26,10 @@ export const Editor: React.FC = () => {
   // Mobile drawer state: 'viewport' | 'params' | 'specs'
   const [mobileTab, setMobileTab] = useState<'viewport' | 'params' | 'specs'>('viewport');
 
+  // Desktop/Tablet Expand & Collapse States (default expanded)
+  const [isLeftExpanded, setIsLeftExpanded] = useState(true);
+  const [isRightExpanded, setIsRightExpanded] = useState(true);
+
   return (
     <div
       className={`w-screen h-[100dvh] flex flex-col overflow-hidden font-sans transition-colors ${
@@ -42,14 +46,15 @@ export const Editor: React.FC = () => {
           <DynamicViewport />
         </main>
 
-        {/* Left Parameter Panel: Desktop translucent sidebar (w-80) / Mobile Drawer */}
+        {/* Left Parameter Panel: Expandable Sidebar on md/lg */}
         <div
           className={`
-            absolute z-20 inset-y-0 left-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
-            ${mobileTab === 'params' ? 'translate-x-0 w-80' : '-translate-x-full md:translate-x-0 w-80'}
+            absolute z-20 inset-y-0 left-0 h-full transition-all duration-300 ease-in-out
+            ${mobileTab === 'params' ? 'translate-x-0 w-80' : '-translate-x-full md:translate-x-0'}
+            ${isLeftExpanded ? 'md:w-80' : 'md:w-0 md:overflow-hidden'}
           `}
         >
-          <div className="h-full relative shadow-2xl md:shadow-none pb-14 md:pb-0">
+          <div className="h-full relative shadow-2xl md:shadow-none pb-14 md:pb-0 w-80">
             {/* Mobile close button inside drawer */}
             <button
               onClick={() => setMobileTab('viewport')}
@@ -57,18 +62,35 @@ export const Editor: React.FC = () => {
             >
               <X className="w-4 h-4" />
             </button>
-            <ParameterPanel />
+            <ParameterPanel onToggleCollapse={() => setIsLeftExpanded(!isLeftExpanded)} isExpanded={isLeftExpanded} />
           </div>
         </div>
 
-        {/* Right Properties Panel: Desktop translucent sidebar (w-72) / Mobile Drawer */}
+        {/* Left Panel Floating Toggle Button when collapsed on desktop */}
+        {!isLeftExpanded && (
+          <button
+            onClick={() => setIsLeftExpanded(true)}
+            className={`hidden md:flex absolute top-4 left-4 z-30 p-2.5 rounded-xl border shadow-xl items-center gap-2 font-bold text-xs transition-all ${
+              isDark
+                ? 'bg-zinc-900/90 border-zinc-700 text-emerald-400 hover:bg-zinc-800'
+                : 'bg-white/90 border-slate-300 text-emerald-600 hover:bg-slate-100'
+            }`}
+            title="Expand Parameter Panel"
+          >
+            <Sliders className="w-4 h-4" />
+            <span>Parameters</span>
+          </button>
+        )}
+
+        {/* Right Properties Panel: Expandable Sidebar on md/lg */}
         <div
           className={`
-            absolute z-20 inset-y-0 right-0 h-full transition-transform duration-300 ease-in-out md:translate-x-0
-            ${mobileTab === 'specs' ? 'translate-x-0 w-72' : 'translate-x-full md:translate-x-0 w-72'}
+            absolute z-20 inset-y-0 right-0 h-full transition-all duration-300 ease-in-out
+            ${mobileTab === 'specs' ? 'translate-x-0 w-72' : 'translate-x-full md:translate-x-0'}
+            ${isRightExpanded ? 'md:w-72' : 'md:w-0 md:overflow-hidden'}
           `}
         >
-          <div className="h-full relative shadow-2xl md:shadow-none pb-14 md:pb-0">
+          <div className="h-full relative shadow-2xl md:shadow-none pb-14 md:pb-0 w-72">
             {/* Mobile close button inside drawer */}
             <button
               onClick={() => setMobileTab('viewport')}
@@ -76,9 +98,25 @@ export const Editor: React.FC = () => {
             >
               <X className="w-4 h-4" />
             </button>
-            <PropertiesPanel />
+            <PropertiesPanel onToggleCollapse={() => setIsRightExpanded(!isRightExpanded)} isExpanded={isRightExpanded} />
           </div>
         </div>
+
+        {/* Right Panel Floating Toggle Button when collapsed on desktop */}
+        {!isRightExpanded && (
+          <button
+            onClick={() => setIsRightExpanded(true)}
+            className={`hidden md:flex absolute top-4 right-4 z-30 p-2.5 rounded-xl border shadow-xl items-center gap-2 font-bold text-xs transition-all ${
+              isDark
+                ? 'bg-zinc-900/90 border-zinc-700 text-emerald-400 hover:bg-zinc-800'
+                : 'bg-white/90 border-slate-300 text-emerald-600 hover:bg-slate-100'
+            }`}
+            title="Expand Fabrication Specs"
+          >
+            <Cpu className="w-4 h-4" />
+            <span>Specs</span>
+          </button>
+        )}
       </div>
 
       {/* Mobile Fixed Bottom Docking Navigation Bar */}

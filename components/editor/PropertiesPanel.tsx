@@ -6,9 +6,12 @@ import { generateCanopyGeometry } from '../../geometry/panels';
 import { generateSeatingGeometry } from '../../geometry/seating';
 import { generatePartitionGeometry } from '../../geometry/partition';
 import { MATERIAL_PRESETS } from '../scene/MetalObject';
-import { Info, CheckCircle2, ShieldAlert, Cpu } from 'lucide-react';
+import { Info, CheckCircle2, ShieldAlert, Cpu, PanelRightClose } from 'lucide-react';
 
-export const PropertiesPanel: React.FC = () => {
+export const PropertiesPanel: React.FC<{ onToggleCollapse?: () => void; isExpanded?: boolean }> = ({
+  onToggleCollapse,
+  isExpanded = true,
+}) => {
   const parameters = useDesignStore((s) => s.parameters);
   const seatingParameters = useDesignStore((s) => s.seatingParameters);
   const partitionParameters = useDesignStore((s) => s.partitionParameters);
@@ -55,9 +58,22 @@ export const PropertiesPanel: React.FC = () => {
       }`}
     >
       {/* Header */}
-      <div className={`p-4 border-b flex items-center gap-2 ${isDark ? 'border-zinc-800' : 'border-slate-200'}`}>
-        <Cpu className="w-4 h-4 text-emerald-500" />
-        <h2 className="text-sm font-semibold uppercase tracking-wider">Fabrication Specs</h2>
+      <div className={`p-4 border-b flex items-center justify-between ${isDark ? 'border-zinc-800' : 'border-slate-200'}`}>
+        <div className="flex items-center gap-2">
+          <Cpu className="w-4 h-4 text-emerald-500" />
+          <h2 className="text-sm font-semibold uppercase tracking-wider">Fabrication Specs</h2>
+        </div>
+        {onToggleCollapse && (
+          <button
+            onClick={onToggleCollapse}
+            title="Collapse Panel"
+            className={`hidden md:flex p-1.5 rounded-lg transition-colors ${
+              isDark ? 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <PanelRightClose className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Content */}
@@ -145,15 +161,65 @@ export const PropertiesPanel: React.FC = () => {
             <div className={`px-2.5 py-1.5 rounded flex items-center justify-between ${
               isDark ? 'bg-zinc-900 text-zinc-300' : 'bg-slate-100 text-slate-700'
             }`}>
-              <span>● Procedural Canopy Panel</span>
-              <span className={`text-[10px] font-mono ${isDark ? 'text-zinc-500' : 'text-slate-400'}`}>1.0mm GI</span>
+              <span>● Procedural 3D Geometry</span>
+              <span className={`text-[10px] font-mono ${isDark ? 'text-zinc-500' : 'text-slate-400'}`}>Sheet Metal</span>
             </div>
-            <div className={`px-2.5 py-1.5 rounded flex items-center justify-between ${
-              isDark ? 'bg-zinc-900 text-zinc-300' : 'bg-slate-100 text-slate-700'
-            }`}>
-              <span>● Internal Light Fixture</span>
-              <span className={`text-[10px] font-mono ${isDark ? 'text-zinc-500' : 'text-slate-400'}`}>Socket</span>
-            </div>
+          </div>
+        </div>
+
+        {/* 3D CAD Export Downloads */}
+        <div className={`space-y-2 pt-3 border-t ${isDark ? 'border-zinc-800' : 'border-slate-200'}`}>
+          <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+            Export 3D Model & Image
+          </h3>
+          <div className="grid grid-cols-2 gap-1.5">
+            <button
+              onClick={async () => {
+                const { exportScene3D } = await import('../../lib/export3D');
+                const scene = (window as any).__PARAMETAL_SCENE__;
+                if (scene) exportScene3D(scene, 'obj', `parametal_${activeCategory}`);
+              }}
+              className="py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-1"
+            >
+              <span>Download</span>
+              <span className="font-mono text-[10px] font-bold">.OBJ</span>
+            </button>
+
+            <button
+              onClick={async () => {
+                const { exportScene3D } = await import('../../lib/export3D');
+                const scene = (window as any).__PARAMETAL_SCENE__;
+                if (scene) exportScene3D(scene, 'fbx', `parametal_${activeCategory}`);
+              }}
+              className="py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-1"
+            >
+              <span>Download</span>
+              <span className="font-mono text-[10px] font-bold">.FBX</span>
+            </button>
+
+            <button
+              onClick={async () => {
+                const { exportScene3D } = await import('../../lib/export3D');
+                const scene = (window as any).__PARAMETAL_SCENE__;
+                if (scene) exportScene3D(scene, 'stl', `parametal_${activeCategory}`);
+              }}
+              className="py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-1"
+            >
+              <span>Download</span>
+              <span className="font-mono text-[10px] font-bold">.STL</span>
+            </button>
+
+            <button
+              onClick={async () => {
+                const { exportScene3D } = await import('../../lib/export3D');
+                const scene = (window as any).__PARAMETAL_SCENE__;
+                if (scene) exportScene3D(scene, 'glb', `parametal_${activeCategory}`);
+              }}
+              className="py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20 transition-all flex items-center justify-center gap-1"
+            >
+              <span>Download</span>
+              <span className="font-mono text-[10px] font-bold">.GLB</span>
+            </button>
           </div>
         </div>
       </div>

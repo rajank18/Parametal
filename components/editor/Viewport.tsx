@@ -1,6 +1,7 @@
 'use client';
 
 import React, { Suspense, useEffect, useRef } from 'react';
+import * as THREE from 'three';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Grid, ContactShadows } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -71,11 +72,23 @@ const CameraPresetController: React.FC = () => {
     );
 };
 
+const SceneRefExporter: React.FC<{ objectGroupRef: React.RefObject<THREE.Group | null> }> = ({ objectGroupRef }) => {
+    const { scene } = useThree();
+    useEffect(() => {
+        (window as any).__PARAMETAL_SCENE__ = scene;
+        if (objectGroupRef.current) {
+            (window as any).__PARAMETAL_OBJECT__ = objectGroupRef.current;
+        }
+    });
+    return null;
+};
+
 export const Viewport: React.FC = () => {
     const showReferenceOverlay = useDesignStore((s) => s.showReferenceOverlay);
     const activeCategory = useDesignStore((s) => s.activeCategory);
     const theme = useDesignStore((s) => s.theme);
     const studioLightRotation = useDesignStore((s) => s.studioLightRotation || 45);
+    const objectGroupRef = useRef<THREE.Group>(null);
 
     const isDark = theme === 'dark';
     const isSeating = activeCategory === 'seating';
@@ -99,6 +112,7 @@ export const Viewport: React.FC = () => {
                 camera={{ position: [1.6, 1.0, 2.1], fov: 45 }}
                 gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
             >
+                <SceneRefExporter objectGroupRef={objectGroupRef} />
                 <color attach="background" args={[isDark ? '#09090b' : '#ffffff']} />
 
                 {/* 360° Studio Lighting Rig with Bright White Lights */}
@@ -130,7 +144,7 @@ export const Viewport: React.FC = () => {
 
                 <Suspense fallback={null}>
                     {/* Floor Object */}
-                    <group position={[0, 0, 0]}>
+                    <group ref={objectGroupRef} position={[0, 0, 0]}>
                         <MetalObject />
                         <Handles />
                     </group>

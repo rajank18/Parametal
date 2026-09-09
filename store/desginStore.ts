@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { CanopyParameters, SeatingParameters, PartitionParameters, ControlPoint3D, DesignState, ObjectCategory, ThemeMode } from '../types/design';
+import { CanopyParameters, SeatingParameters, PartitionParameters, SculpturalParameters, ControlPoint3D, DesignState, ObjectCategory, ThemeMode } from '../types/design';
 import { buildControlPointGrid } from '../geometry/curves';
 import { buildSeatingControlPoints } from '../geometry/seating';
 
@@ -80,10 +80,47 @@ export const DEFAULT_PARTITION_PARAMETERS: PartitionParameters = {
     lightBulbs: true,
 };
 
+export const DEFAULT_SCULPTURAL_PARAMETERS: SculpturalParameters = {
+    objectName: 'Sculptural Vessel / Object',
+    height: 600,
+    baseRadius: 100,
+    waistRadius: 160,
+    neckRadius: 70,
+    wallThickness: 2.0,
+    hasHandle: true,
+    handleWidth: 60,
+    materialType: 'mild_steel',
+    geometrySpec: {
+        topology: 'revolved',
+        objectType: 'container',
+        confidence: 1.0,
+        dimensions: {
+            width: 320,
+            depth: 320,
+            height: 600,
+        },
+        materialType: 'mild_steel',
+        components: [
+            {
+                type: 'revolved_body',
+                role: 'Sculptural Vessel Body',
+                height: 600,
+                baseRadius: 100,
+                waistRadius: 160,
+                neckRadius: 70,
+                wallThickness: 2.0,
+                hasHandle: true,
+                handleWidth: 60,
+            },
+        ],
+    },
+};
+
 export const useDesignStore = create<ExtendedDesignState>((set, get) => ({
     parameters: { ...DEFAULT_CANOPY_PARAMETERS },
     seatingParameters: { ...DEFAULT_SEATING_PARAMETERS },
     partitionParameters: { ...DEFAULT_PARTITION_PARAMETERS },
+    sculpturalParameters: { ...DEFAULT_SCULPTURAL_PARAMETERS },
     controlPoints: buildControlPointGrid(DEFAULT_CANOPY_PARAMETERS),
     seatingControlPoints: buildSeatingControlPoints(DEFAULT_SEATING_PARAMETERS),
     selectedPointId: null,
@@ -122,6 +159,12 @@ export const useDesignStore = create<ExtendedDesignState>((set, get) => ({
     updatePartitionParameters: (newParams: Partial<PartitionParameters>) => {
         set((state) => ({
             partitionParameters: { ...state.partitionParameters, ...newParams },
+        }));
+    },
+
+    updateSculpturalParameters: (newParams: Partial<SculpturalParameters>) => {
+        set((state) => ({
+            sculpturalParameters: { ...state.sculpturalParameters, ...newParams },
         }));
     },
 

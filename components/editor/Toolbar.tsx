@@ -3,7 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDesignStore, CameraPreset } from '../../store/desginStore';
 import { ObjectCategory } from '../../types/design';
-import { Box, Image as ImageIcon, Download, Target, Camera, Sun, Moon, ChevronDown, Lightbulb, Armchair, Table, Package, Grid, Layout } from 'lucide-react';
+import { Box, Image as ImageIcon, Download, Target, Camera, Sun, Moon, ChevronDown, Lightbulb, Armchair, Table, Package, Grid, Layout, Sparkles } from 'lucide-react';
+import { ImageToDesignModal } from './ImageToDesignModal';
 
 export const CATEGORY_ICONS: Record<ObjectCategory, { name: string; icon: React.ComponentType<{ className?: string }> }> = {
     lamp: { name: ' Lamp', icon: Lightbulb },
@@ -12,6 +13,7 @@ export const CATEGORY_ICONS: Record<ObjectCategory, { name: string; icon: React.
     table: { name: 'Table', icon: Table },
     storage: { name: 'Storage Unit', icon: Package },
     wall_mounted: { name: 'Wall-Mounted', icon: Layout },
+    sculptural: { name: 'AI Sculptural Vessel', icon: Sparkles },
 };
 
 export const Toolbar: React.FC = () => {
@@ -31,6 +33,8 @@ export const Toolbar: React.FC = () => {
     const parameters = useDesignStore((s) => s.parameters);
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isExportDropdownOpen, setIsExportDropdownOpen] = useState(false);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const isDark = theme === 'dark';
@@ -67,6 +71,21 @@ export const Toolbar: React.FC = () => {
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();
+    };
+
+    const handleExport3DFormat = async (format: 'obj' | 'fbx' | 'stl' | 'glb') => {
+        const canvas = document.querySelector('canvas');
+        if (!canvas) return;
+
+        const { exportScene3D } = await import('../../lib/export3D');
+        // Retrieve live Three.js scene from window reference or canvas fiber state
+        const scene = (window as any).__PARAMETAL_SCENE__ || (canvas as any)?.__r3f?.store?.getState()?.scene;
+
+        if (scene) {
+            exportScene3D(scene, format, `parametal_${activeCategory}`);
+        } else {
+            console.warn('Could not locate Three.js scene instance for 3D export.');
+        }
     };
 
     return (
@@ -176,48 +195,61 @@ export const Toolbar: React.FC = () => {
             {/* View Toggles, Theme Toggle & Actions */}
             <div className="flex items-center gap-1 sm:gap-2">
                 <div
-                    className={`flex items-center gap-0.5 sm:gap-1 p-0.5 sm:p-1 rounded-lg sm:rounded-xl border transition-colors ${isDark ? 'bg-zinc-900/80 border-zinc-800' : 'bg-slate-100 border-slate-200'
+                    className={`flex items-center gap-1 p-1 rounded-xl border transition-colors ${isDark ? 'bg-zinc-900/80 border-zinc-800' : 'bg-slate-100/80 border-slate-200'
                         }`}
                 >
                     <button
                         onClick={() => setWireframe(!wireframe)}
-                        className={`p-1 sm:px-2.5 sm:py-1 text-xs rounded-md sm:rounded-lg font-medium transition-all ${wireframe
-                            ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/40'
+                        className={`flex items-center gap-1.5 px-2 py-1 text-xs rounded-lg font-medium transition-all ${wireframe
+                            ? 'bg-emerald-500/15 text-emerald-500 font-bold border border-emerald-500/30'
                             : isDark
-                                ? 'text-zinc-400 hover:text-zinc-200'
-                                : 'text-slate-600 hover:text-slate-900'
+                                ? 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
                             }`}
                         title="Toggle Wireframe Topology"
                     >
-                        <Box className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Wireframe</span>
+                        <Box className="w-3.5 h-3.5 shrink-0" />
+                        <span className="hidden sm:inline whitespace-nowrap">Wireframe</span>
                     </button>
 
                     <button
                         onClick={() => setShowHandles(!showHandles)}
-                        className={`p-1 sm:px-2.5 sm:py-1 text-xs rounded-lg font-medium transition-all ${showHandles
-                            ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/40'
+                        className={`flex items-center gap-1.5 px-2 py-1 text-xs rounded-lg font-medium transition-all ${showHandles
+                            ? 'bg-emerald-500/15 text-emerald-500 font-bold border border-emerald-500/30'
                             : isDark
-                                ? 'text-zinc-400 hover:text-zinc-200'
-                                : 'text-slate-600 hover:text-slate-900'
+                                ? 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
                             }`}
                         title="Toggle 3D Control Point Gizmos"
                     >
-                        <Target className="w-3.5 h-3.5" /> <span className="hidden sm:inline">3D Handles</span>
+                        <Target className="w-3.5 h-3.5 shrink-0" />
+                        <span className="hidden sm:inline whitespace-nowrap">3D Handles</span>
                     </button>
 
                     <button
                         onClick={() => setShowReferenceOverlay(!showReferenceOverlay)}
-                        className={`p-1 sm:px-2.5 sm:py-1 text-xs rounded-lg font-medium transition-all ${showReferenceOverlay
-                            ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/40'
+                        className={`flex items-center gap-1.5 px-2 py-1 text-xs rounded-lg font-medium transition-all ${showReferenceOverlay
+                            ? 'bg-emerald-500/15 text-emerald-500 font-bold border border-emerald-500/30'
                             : isDark
-                                ? 'text-zinc-400 hover:text-zinc-200'
-                                : 'text-slate-600 hover:text-slate-900'
+                                ? 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
                             }`}
                         title="Toggle Reference Photo Blueprint"
                     >
-                        <ImageIcon className="w-3.5 h-3.5" /> <span className="hidden md:inline">Reference Blueprint</span>
+                        <ImageIcon className="w-3.5 h-3.5 shrink-0" />
+                        <span className="hidden md:inline whitespace-nowrap">Blueprint</span>
                     </button>
                 </div>
+
+                {/* AI Image-to-3D Trigger */}
+                <button
+                    onClick={() => setIsImageModalOpen(true)}
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg sm:rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20 text-xs font-bold transition-all shadow-sm"
+                    title="Generate 3D Parametric Model from Photo (AI)"
+                >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">AI Image to 3D</span>
+                </button>
 
                 {/* Theme Mode Toggle Button */}
                 <button
@@ -231,17 +263,89 @@ export const Toolbar: React.FC = () => {
                     {isDark ? <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" /> : <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600" />}
                 </button>
 
-                <button
-                    onClick={handleExportPNG}
-                    className={`p-1.5 sm:px-3 sm:py-1.5 border text-xs font-semibold rounded-lg transition-colors ${isDark
-                        ? 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800 text-zinc-200'
-                        : 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-800'
-                        }`}
-                    title="Download 3D View Image (PNG)"
-                >
-                    <Download className={`w-3.5 h-3.5 ${isDark ? 'text-zinc-400' : 'text-slate-500'}`} /> <span className="hidden sm:inline">Save Image</span>
-                </button>
+                {/* Export Dropdown (.OBJ, .FBX, .STL, .GLB, Image PNG) */}
+                <div className="relative">
+                    <button
+                        onClick={() => setIsExportDropdownOpen(!isExportDropdownOpen)}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs rounded-lg sm:rounded-xl transition-all shadow-md"
+                        title="Download 3D Model or Rendered Image"
+                    >
+                        <Download className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Export Model</span>
+                        <ChevronDown className="w-3 h-3 ml-0.5" />
+                    </button>
+
+                    {isExportDropdownOpen && (
+                        <div
+                            className={`absolute top-full right-0 mt-1.5 w-44 rounded-xl border shadow-2xl p-1.5 z-50 transition-all ${
+                                isDark ? 'bg-zinc-900 border-zinc-800 text-zinc-100' : 'bg-white border-slate-200 text-slate-900'
+                            }`}
+                        >
+                            <div className={`px-2 py-1 text-[10px] font-mono uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                                3D CAD Formats
+                            </div>
+
+                            <button
+                                onClick={() => { handleExport3DFormat('obj'); setIsExportDropdownOpen(false); }}
+                                className={`w-full text-left px-2.5 py-1.5 text-xs rounded-lg font-medium transition-colors flex items-center justify-between ${
+                                    isDark ? 'hover:bg-zinc-800 text-zinc-200' : 'hover:bg-slate-100 text-slate-800'
+                                }`}
+                            >
+                                <span>Wavefront OBJ</span>
+                                <span className="font-mono text-[10px] text-emerald-500 font-bold">.OBJ</span>
+                            </button>
+
+                            <button
+                                onClick={() => { handleExport3DFormat('fbx'); setIsExportDropdownOpen(false); }}
+                                className={`w-full text-left px-2.5 py-1.5 text-xs rounded-lg font-medium transition-colors flex items-center justify-between ${
+                                    isDark ? 'hover:bg-zinc-800 text-zinc-200' : 'hover:bg-slate-100 text-slate-800'
+                                }`}
+                            >
+                                <span>Filmbox FBX</span>
+                                <span className="font-mono text-[10px] text-emerald-500 font-bold">.FBX</span>
+                            </button>
+
+                            <button
+                                onClick={() => { handleExport3DFormat('stl'); setIsExportDropdownOpen(false); }}
+                                className={`w-full text-left px-2.5 py-1.5 text-xs rounded-lg font-medium transition-colors flex items-center justify-between ${
+                                    isDark ? 'hover:bg-zinc-800 text-zinc-200' : 'hover:bg-slate-100 text-slate-800'
+                                }`}
+                            >
+                                <span>Stereolithography STL</span>
+                                <span className="font-mono text-[10px] text-emerald-500 font-bold">.STL</span>
+                            </button>
+
+                            <button
+                                onClick={() => { handleExport3DFormat('glb'); setIsExportDropdownOpen(false); }}
+                                className={`w-full text-left px-2.5 py-1.5 text-xs rounded-lg font-medium transition-colors flex items-center justify-between ${
+                                    isDark ? 'hover:bg-zinc-800 text-zinc-200' : 'hover:bg-slate-100 text-slate-800'
+                                }`}
+                            >
+                                <span>Binary glTF</span>
+                                <span className="font-mono text-[10px] text-emerald-500 font-bold">.GLB</span>
+                            </button>
+
+                            <div className={`mt-1 pt-1 border-t ${isDark ? 'border-zinc-800' : 'border-slate-200'}`}>
+                                <div className={`px-2 py-1 text-[10px] font-mono uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                                    2D Image Render
+                                </div>
+                                <button
+                                    onClick={() => { handleExportPNG(); setIsExportDropdownOpen(false); }}
+                                    className={`w-full text-left px-2.5 py-1.5 text-xs rounded-lg font-medium transition-colors flex items-center justify-between ${
+                                        isDark ? 'hover:bg-zinc-800 text-zinc-200' : 'hover:bg-slate-100 text-slate-800'
+                                    }`}
+                                >
+                                    <span>High-Res Photo Render</span>
+                                    <span className="font-mono text-[10px] text-emerald-500 font-bold">.PNG</span>
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
+
+            {/* AI Image-to-3D Modal */}
+            <ImageToDesignModal isOpen={isImageModalOpen} onClose={() => setIsImageModalOpen(false)} />
         </header>
     );
 };

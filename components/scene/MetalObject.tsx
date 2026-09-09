@@ -6,6 +6,7 @@ import { useDesignStore } from '../../store/desginStore';
 import { generateCanopyGeometry, generateBodyGeometry } from '../../geometry/panels';
 import { generateSeatingGeometry } from '../../geometry/seating';
 import { generatePartitionGeometry } from '../../geometry/partition';
+import { generateGeometry, convertSculpturalParamsToSpec } from '../../geometry/engine';
 import { MaterialConfig, MaterialType } from '../../types/design';
 
 export const MATERIAL_PRESETS: Record<MaterialType, MaterialConfig> = {
@@ -46,6 +47,7 @@ export const MetalObject: React.FC = () => {
   const parameters = useDesignStore((s) => s.parameters);
   const seatingParameters = useDesignStore((s) => s.seatingParameters);
   const partitionParameters = useDesignStore((s) => s.partitionParameters);
+  const sculpturalParameters = useDesignStore((s) => s.sculpturalParameters);
   const controlPoints = useDesignStore((s) => s.controlPoints);
   const seatingControlPoints = useDesignStore((s) => s.seatingControlPoints);
   const wireframe = useDesignStore((s) => s.wireframe);
@@ -70,11 +72,64 @@ export const MetalObject: React.FC = () => {
     return generatePartitionGeometry(partitionParameters);
   }, [partitionParameters]);
 
+  // AI Semantic GeometrySpec Engine (Handles revolved, prismatic_assembly, and continuous_sheet)
+  const sculpturalResult = useMemo(() => {
+    try {
+      const spec = convertSculpturalParamsToSpec(sculpturalParameters);
+      return { data: generateGeometry(spec), error: null };
+    } catch (err: any) {
+      console.error('[MetalObject] Geometry generation error:', err);
+      return { data: null, error: err?.message || 'Failed to generate 3D geometry' };
+    }
+  }, [sculpturalParameters]);
+
   const matConfig = MATERIAL_PRESETS[parameters.materialType] || MATERIAL_PRESETS.galvanized;
   const seatingMatConfig = MATERIAL_PRESETS[seatingParameters.materialType] || MATERIAL_PRESETS.galvanized;
+  const sculpturalMatConfig = MATERIAL_PRESETS[sculpturalParameters.materialType] || MATERIAL_PRESETS.aluminum;
 
   const centerHeightM = (parameters.centerHeight || 1335) * 0.001;
   const lightPos: [number, number, number] = [-0.22, centerHeightM - 0.12, 0.02];
+
+  // Render AI Parametric GeometrySpec
+  if (activeCategory === 'sculptural') {
+    if (sculpturalResult.error) {
+      return (
+        <group position={[0, 0.5, 0]}>
+          <mesh>
+            <boxGeometry args={[0.4, 0.4, 0.4]} />
+            <meshStandardMaterial color="#e11d48" wireframe={true} />
+          </mesh>
+        </group>
+      );
+    }
+
+    const parts = sculpturalResult.data?.result?.parts || [];
+
+    return (
+      <group position={[0, 0, 0]}>
+        {parts.map((part) => (
+          <mesh
+            key={part.id}
+            geometry={part.geometry}
+            position={part.position}
+            rotation={part.rotation ? [part.rotation[0], part.rotation[1], part.rotation[2]] : [0, 0, 0]}
+            castShadow
+            receiveShadow
+          >
+            <meshPhysicalMaterial
+              color={part.color || sculpturalMatConfig.color}
+              roughness={sculpturalMatConfig.roughness}
+              metalness={sculpturalMatConfig.metalness}
+              clearcoat={sculpturalMatConfig.clearcoat || 0.3}
+              clearcoatRoughness={sculpturalMatConfig.clearcoatRoughness || 0.2}
+              wireframe={wireframe}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        ))}
+      </group>
+    );
+  }
 
   // Render Seating (Continuous Sculptural Sheet Lounge Chair)
   if (activeCategory === 'seating') {

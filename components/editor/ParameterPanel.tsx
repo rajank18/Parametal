@@ -2,15 +2,20 @@
 
 import React from 'react';
 import { useDesignStore } from '../../store/desginStore';
-import { Sliders, Maximize2, Layers, Sun, RotateCcw } from 'lucide-react';
+import { Sliders, Maximize2, Layers, Sun, RotateCcw, PanelLeftClose } from 'lucide-react';
 
-export const ParameterPanel: React.FC = () => {
+export const ParameterPanel: React.FC<{ onToggleCollapse?: () => void; isExpanded?: boolean }> = ({
+  onToggleCollapse,
+  isExpanded = true,
+}) => {
   const parameters = useDesignStore((s) => s.parameters);
   const seatingParameters = useDesignStore((s) => s.seatingParameters);
   const partitionParameters = useDesignStore((s) => s.partitionParameters);
+  const sculpturalParameters = useDesignStore((s) => s.sculpturalParameters);
   const updateParameters = useDesignStore((s) => s.updateParameters);
   const updateSeatingParameters = useDesignStore((s) => s.updateSeatingParameters);
   const updatePartitionParameters = useDesignStore((s) => s.updatePartitionParameters);
+  const updateSculpturalParameters = useDesignStore((s) => s.updateSculpturalParameters);
   const resetToDefaults = useDesignStore((s) => s.resetToDefaults);
   const activeTab = useDesignStore((s) => s.activeTab);
   const setActiveTab = useDesignStore((s) => s.setActiveTab);
@@ -26,6 +31,8 @@ export const ParameterPanel: React.FC = () => {
 
   const isDark = theme === 'dark';
   const isSeating = activeCategory === 'seating';
+  const isSculptural = activeCategory === 'sculptural';
+  const isPartition = activeCategory === 'partition';
 
   const activePoints = isSeating ? seatingControlPoints : controlPoints;
   const selectedPoint = activePoints.find((p) => p.id === selectedPointId);
@@ -40,19 +47,32 @@ export const ParameterPanel: React.FC = () => {
       <div className={`p-4 border-b flex items-center justify-between ${isDark ? 'border-zinc-800' : 'border-slate-200'}`}>
         <div className="flex items-center gap-2">
           <Sliders className="w-4 h-4 text-emerald-500" />
-          <h2 className="text-sm font-semibold uppercase tracking-wider">
-            {isSeating ? 'Seating Engine' : 'Canopy Engine'}
+          <h2 className="text-sm font-semibold uppercase tracking-wider truncate max-w-[170px]">
+            {isSeating ? 'Seating Engine' : isSculptural ? 'AI Sculptural Engine' : isPartition ? 'Partition Engine' : 'Canopy Engine'}
           </h2>
         </div>
-        <button
-          onClick={resetToDefaults}
-          title="Reset Parameters"
-          className={`p-1.5 rounded-lg transition-colors ${
-            isDark ? 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
-          }`}
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={resetToDefaults}
+            title="Reset Parameters"
+            className={`p-1.5 rounded-lg transition-colors ${
+              isDark ? 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+            }`}
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+          {onToggleCollapse && (
+            <button
+              onClick={onToggleCollapse}
+              title="Collapse Panel"
+              className={`hidden md:flex p-1.5 rounded-lg transition-colors ${
+                isDark ? 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Tabs */}
@@ -449,7 +469,90 @@ export const ParameterPanel: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'parameters' && !isSeating && activeCategory !== 'partition' && (
+        {/* Sculptural Controls */}
+        {activeTab === 'parameters' && isSculptural && (
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
+                Sculptural Object Proportions
+              </h3>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Height</span>
+                  <span className="font-mono text-emerald-500 font-bold">{(sculpturalParameters?.height ?? 400)} mm</span>
+                </div>
+                <input
+                  type="range"
+                  min="50"
+                  max="1600"
+                  step="10"
+                  value={sculpturalParameters?.height ?? 400}
+                  onChange={(e) => updateSculpturalParameters({ height: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Base Radius</span>
+                  <span className="font-mono text-emerald-500 font-bold">{(sculpturalParameters?.baseRadius ?? 100)} mm</span>
+                </div>
+                <input
+                  type="range"
+                  min="20"
+                  max="500"
+                  step="5"
+                  value={sculpturalParameters?.baseRadius ?? 100}
+                  onChange={(e) => updateSculpturalParameters({ baseRadius: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Waist Bulge Radius</span>
+                  <span className="font-mono text-emerald-500 font-bold">{(sculpturalParameters?.waistRadius ?? 100)} mm</span>
+                </div>
+                <input
+                  type="range"
+                  min="20"
+                  max="600"
+                  step="5"
+                  value={sculpturalParameters?.waistRadius ?? 100}
+                  onChange={(e) => updateSculpturalParameters({ waistRadius: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs">
+                  <span>Neck / Top Radius</span>
+                  <span className="font-mono text-emerald-500 font-bold">{(sculpturalParameters?.neckRadius ?? 100)} mm</span>
+                </div>
+                <input
+                  type="range"
+                  min="20"
+                  max="400"
+                  step="5"
+                  value={sculpturalParameters?.neckRadius ?? 100}
+                  onChange={(e) => updateSculpturalParameters({ neckRadius: Number(e.target.value) })}
+                  className={`w-full accent-emerald-500 h-1.5 rounded-lg appearance-none cursor-pointer ${
+                    isDark ? 'bg-zinc-800' : 'bg-slate-200'
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'parameters' && !isSeating && !isSculptural && activeCategory !== 'partition' && (
           <>
             <div className="space-y-4">
               <h3 className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-zinc-400' : 'text-slate-500'}`}>
