@@ -102,7 +102,6 @@ export type ObjectType =
   | 'partition'
   | 'electronics'
   | 'container'
-  | 'wall_mounted'
   | 'unknown';
 
 export interface BaseComponentSpec {

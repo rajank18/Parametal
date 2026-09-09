@@ -90,30 +90,6 @@ export const DEFAULT_SCULPTURAL_PARAMETERS: SculpturalParameters = {
     hasHandle: true,
     handleWidth: 60,
     materialType: 'mild_steel',
-    geometrySpec: {
-        topology: 'revolved',
-        objectType: 'container',
-        confidence: 1.0,
-        dimensions: {
-            width: 320,
-            depth: 320,
-            height: 600,
-        },
-        materialType: 'mild_steel',
-        components: [
-            {
-                type: 'revolved_body',
-                role: 'Sculptural Vessel Body',
-                height: 600,
-                baseRadius: 100,
-                waistRadius: 160,
-                neckRadius: 70,
-                wallThickness: 2.0,
-                hasHandle: true,
-                handleWidth: 60,
-            },
-        ],
-    },
 };
 
 export const useDesignStore = create<ExtendedDesignState>((set, get) => ({

@@ -73,15 +73,13 @@ export const MetalObject: React.FC = () => {
   }, [partitionParameters]);
 
   // AI Semantic GeometrySpec Engine (Handles revolved, prismatic_assembly, and continuous_sheet)
-  const sculpturalResult = useMemo(() => {
-    try {
-      const spec = convertSculpturalParamsToSpec(sculpturalParameters);
-      return { data: generateGeometry(spec), error: null };
-    } catch (err: any) {
-      console.error('[MetalObject] Geometry generation error:', err);
-      return { data: null, error: err?.message || 'Failed to generate 3D geometry' };
-    }
+  const sculpturalSpec = useMemo(() => {
+    return convertSculpturalParamsToSpec(sculpturalParameters);
   }, [sculpturalParameters]);
+
+  const sculpturalResult = useMemo(() => {
+    return generateGeometry(sculpturalSpec);
+  }, [sculpturalSpec]);
 
   const matConfig = MATERIAL_PRESETS[parameters.materialType] || MATERIAL_PRESETS.galvanized;
   const seatingMatConfig = MATERIAL_PRESETS[seatingParameters.materialType] || MATERIAL_PRESETS.galvanized;
@@ -92,18 +90,7 @@ export const MetalObject: React.FC = () => {
 
   // Render AI Parametric GeometrySpec
   if (activeCategory === 'sculptural') {
-    if (sculpturalResult.error) {
-      return (
-        <group position={[0, 0.5, 0]}>
-          <mesh>
-            <boxGeometry args={[0.4, 0.4, 0.4]} />
-            <meshStandardMaterial color="#e11d48" wireframe={true} />
-          </mesh>
-        </group>
-      );
-    }
-
-    const parts = sculpturalResult.data?.result?.parts || [];
+    const parts = sculpturalResult.result?.parts || [];
 
     return (
       <group position={[0, 0, 0]}>
