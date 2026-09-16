@@ -2,27 +2,30 @@
 
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Toolbar } from './Toolbar';
-import { ParameterPanel } from './ParameterPanel';
-import { PropertiesPanel } from './PropertiesPanel';
-import { CategorySelectorModal } from './CategorySelectorModal';
-import { useDesignStore } from '../../store/desginStore';
+import { StudioNavbar } from './StudioNavbar';
+import { StudioParameterPanel } from './StudioParameterPanel';
+import { StudioPropertiesPanel } from './StudioPropertiesPanel';
+import { StudioInitialUploadModal } from './StudioInitialUploadModal';
+import { useStudioStore } from '../../store/studioStore';
 import { Sliders, Cpu, Eye, X } from 'lucide-react';
 
-const DynamicViewport = dynamic(() => import('./Viewport').then((mod) => mod.Viewport), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-zinc-950 flex flex-col items-center justify-center text-zinc-400 gap-3">
-      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-      <span className="text-xs font-mono">Initializing Parametal 3D Engine...</span>
-    </div>
-  ),
-});
+const DynamicStudioViewport = dynamic(
+  () => import('./StudioViewport').then((mod) => mod.StudioViewport),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full bg-zinc-950 flex flex-col items-center justify-center text-zinc-400 gap-3">
+        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs font-mono">Initializing Parametal 3D Studio...</span>
+      </div>
+    ),
+  }
+);
 
-export const Editor: React.FC = () => {
-  const theme = useDesignStore((s) => s.theme);
-  const leftSidebarOpen = useDesignStore((s) => s.leftSidebarOpen);
-  const rightSidebarOpen = useDesignStore((s) => s.rightSidebarOpen);
+export const StudioEditor: React.FC = () => {
+  const theme = useStudioStore((s) => s.theme);
+  const leftSidebarOpen = useStudioStore((s) => s.leftSidebarOpen);
+  const rightSidebarOpen = useStudioStore((s) => s.rightSidebarOpen);
   const isDark = theme === 'dark';
 
   // Mobile drawer state: 'viewport' | 'params' | 'specs'
@@ -35,13 +38,13 @@ export const Editor: React.FC = () => {
       }`}
     >
       {/* Top Navbar */}
-      <Toolbar />
+      <StudioNavbar />
 
       {/* Main Workspace Body */}
       <div className="flex-1 flex overflow-hidden relative pb-14 md:pb-0">
         {/* Full-bleed Center 3D Viewport */}
         <main className="absolute inset-0 w-full h-full relative overflow-hidden">
-          <DynamicViewport />
+          <DynamicStudioViewport />
         </main>
 
         {/* Left Parameter Panel: Desktop translucent sidebar (w-80) / Mobile Drawer */}
@@ -62,7 +65,7 @@ export const Editor: React.FC = () => {
             >
               <X className="w-4 h-4" />
             </button>
-            <ParameterPanel />
+            <StudioParameterPanel />
           </div>
         </div>
 
@@ -84,21 +87,29 @@ export const Editor: React.FC = () => {
             >
               <X className="w-4 h-4" />
             </button>
-            <PropertiesPanel />
+            <StudioPropertiesPanel />
           </div>
         </div>
       </div>
 
       {/* Mobile Fixed Bottom Docking Navigation Bar */}
-      <nav className={`fixed bottom-0 left-0 right-0 md:hidden flex items-center justify-around h-14 border-t z-50 px-2 transition-colors ${
-        isDark ? 'bg-zinc-950/95 border-zinc-800 text-zinc-400 backdrop-blur-md' : 'bg-white/95 border-zinc-200 text-zinc-600 backdrop-blur-md'
-      }`}>
+      <nav
+        className={`fixed bottom-0 left-0 right-0 md:hidden flex items-center justify-around h-14 border-t z-50 px-2 transition-colors ${
+          isDark
+            ? 'bg-zinc-950/95 border-zinc-800 text-zinc-400 backdrop-blur-md'
+            : 'bg-white/95 border-zinc-200 text-zinc-600 backdrop-blur-md'
+        }`}
+      >
         <button
           onClick={() => setMobileTab('params')}
           className={`flex flex-col items-center gap-1 text-[10px] font-mono font-bold py-1 px-4 rounded-xl transition-colors ${
             mobileTab === 'params'
-              ? isDark ? 'text-white bg-zinc-900' : 'text-black bg-zinc-100'
-              : isDark ? 'hover:text-white' : 'hover:text-black'
+              ? isDark
+                ? 'text-white bg-zinc-900'
+                : 'text-black bg-zinc-100'
+              : isDark
+              ? 'hover:text-white'
+              : 'hover:text-black'
           }`}
         >
           <Sliders className="w-4 h-4" />
@@ -109,8 +120,12 @@ export const Editor: React.FC = () => {
           onClick={() => setMobileTab('viewport')}
           className={`flex flex-col items-center gap-1 text-[10px] font-mono font-bold py-1 px-4 rounded-xl transition-colors ${
             mobileTab === 'viewport'
-              ? isDark ? 'text-white bg-zinc-900' : 'text-black bg-zinc-100'
-              : isDark ? 'hover:text-white' : 'hover:text-black'
+              ? isDark
+                ? 'text-white bg-zinc-900'
+                : 'text-black bg-zinc-100'
+              : isDark
+              ? 'hover:text-white'
+              : 'hover:text-black'
           }`}
         >
           <Eye className="w-4 h-4" />
@@ -121,8 +136,12 @@ export const Editor: React.FC = () => {
           onClick={() => setMobileTab('specs')}
           className={`flex flex-col items-center gap-1 text-[10px] font-mono font-bold py-1 px-4 rounded-xl transition-colors ${
             mobileTab === 'specs'
-              ? isDark ? 'text-white bg-zinc-900' : 'text-black bg-zinc-100'
-              : isDark ? 'hover:text-white' : 'hover:text-black'
+              ? isDark
+                ? 'text-white bg-zinc-900'
+                : 'text-black bg-zinc-100'
+              : isDark
+              ? 'hover:text-white'
+              : 'hover:text-black'
           }`}
         >
           <Cpu className="w-4 h-4" />
@@ -130,8 +149,8 @@ export const Editor: React.FC = () => {
         </button>
       </nav>
 
-      {/* Object Family Selection Modal */}
-      <CategorySelectorModal />
+      {/* Initial Drop/Upload Modal Popup */}
+      <StudioInitialUploadModal />
     </div>
   );
 };

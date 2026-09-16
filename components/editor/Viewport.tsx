@@ -1,6 +1,7 @@
 'use client';
 
 import React, { Suspense, useEffect, useRef } from 'react';
+import * as THREE from 'three';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Grid, ContactShadows } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
@@ -71,11 +72,23 @@ const CameraPresetController: React.FC = () => {
     );
 };
 
+const SceneRefExporter: React.FC<{ objectGroupRef: React.RefObject<THREE.Group | null> }> = ({ objectGroupRef }) => {
+    const { scene } = useThree();
+    useEffect(() => {
+        (window as any).__PARAMETAL_SCENE__ = scene;
+        if (objectGroupRef.current) {
+            (window as any).__PARAMETAL_OBJECT__ = objectGroupRef.current;
+        }
+    });
+    return null;
+};
+
 export const Viewport: React.FC = () => {
     const showReferenceOverlay = useDesignStore((s) => s.showReferenceOverlay);
     const activeCategory = useDesignStore((s) => s.activeCategory);
     const theme = useDesignStore((s) => s.theme);
     const studioLightRotation = useDesignStore((s) => s.studioLightRotation || 45);
+    const objectGroupRef = useRef<THREE.Group>(null);
 
     const isDark = theme === 'dark';
     const isSeating = activeCategory === 'seating';
@@ -90,7 +103,7 @@ export const Viewport: React.FC = () => {
 
     return (
         <div
-            className={`relative w-full h-full select-none overflow-hidden transition-colors ${isDark ? 'bg-gradient-to-b from-zinc-950 via-zinc-900 to-black' : 'bg-gradient-to-b from-slate-100 via-slate-50 to-white'
+            className={`relative w-full h-full select-none overflow-hidden transition-colors ${isDark ? 'bg-zinc-950' : 'bg-zinc-50'
                 }`}
         >
             {/* 3D Canvas */}
@@ -99,12 +112,13 @@ export const Viewport: React.FC = () => {
                 camera={{ position: [1.6, 1.0, 2.1], fov: 45 }}
                 gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
             >
-                <color attach="background" args={[isDark ? '#09090b' : '#ffffff']} />
+                <SceneRefExporter objectGroupRef={objectGroupRef} />
+                <color attach="background" args={[isDark ? '#000000' : '#ffffff']} />
 
                 {/* 360° Studio Lighting Rig with Bright White Lights */}
                 <hemisphereLight
                     color="#ffffff"
-                    groundColor={isDark ? '#09090b' : '#e2e8f0'}
+                    groundColor={isDark ? '#000000' : '#f4f4f5'}
                     intensity={isDark ? 0.6 : 0.9}
                 />
 
@@ -130,7 +144,7 @@ export const Viewport: React.FC = () => {
 
                 <Suspense fallback={null}>
                     {/* Floor Object */}
-                    <group position={[0, 0, 0]}>
+                    <group ref={objectGroupRef} position={[0, 0, 0]}>
                         <MetalObject />
                         <Handles />
                     </group>
@@ -138,13 +152,13 @@ export const Viewport: React.FC = () => {
                     {/* Pure White/Dark Studio Ground Plane */}
                     <mesh position={[0, -0.002, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
                         <planeGeometry args={[100, 100]} />
-                        <meshBasicMaterial color={isDark ? '#09090b' : '#ffffff'} />
+                        <meshBasicMaterial color={isDark ? '#000000' : '#ffffff'} />
                     </mesh>
 
                     {/* Studio Floor Directional Shadow Receiver Plane */}
                     <mesh position={[0, -0.0005, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
                         <planeGeometry args={[20, 20]} />
-                        <shadowMaterial opacity={isDark ? 0.75 : 0.35} />
+                        <shadowMaterial opacity={isDark ? 0.75 : 0.25} />
                     </mesh>
 
                     {/* Floor Grid at Y=0 */}
@@ -153,10 +167,10 @@ export const Viewport: React.FC = () => {
                         args={[20, 20]}
                         cellSize={0.1}
                         cellThickness={0.8}
-                        cellColor={isDark ? '#27272a' : '#e2e8f0'}
+                        cellColor={isDark ? '#27272a' : '#e4e4e7'}
                         sectionSize={0.5}
                         sectionThickness={1.2}
-                        sectionColor={isDark ? '#3f3f46' : '#cbd5e1'}
+                        sectionColor={isDark ? '#3f3f46' : '#d4d4d8'}
                         fadeDistance={12}
                         infiniteGrid
                     />
@@ -168,11 +182,11 @@ export const Viewport: React.FC = () => {
             {/* Reference Image Overlay Modal */}
             {showReferenceOverlay && (
                 <div
-                    className={`absolute top-4 right-4 z-20 w-80 rounded-xl border backdrop-blur-md p-3 shadow-2xl transition-all ${isDark ? 'bg-zinc-900/90 border-zinc-700/80 text-zinc-100' : 'bg-white/90 border-slate-300 text-slate-900'
+                    className={`absolute top-4 right-4 z-20 w-80 rounded-xl border backdrop-blur-md p-3 shadow-2xl transition-all ${isDark ? 'bg-zinc-950/90 border-zinc-800 text-white' : 'bg-white/90 border-zinc-300 text-black'
                         }`}
                 >
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-semibold uppercase tracking-wider">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider">
                             {isSeating ? 'Reference Seating Blueprint' : 'Reference Lamp Blueprint'}
                         </span>
                     </div>

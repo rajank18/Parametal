@@ -9,6 +9,12 @@ export interface ExtendedDesignState extends DesignState {
     cameraPreset: CameraPreset;
     setCameraPreset: (preset: CameraPreset) => void;
     moveControlPointWithFalloff: (id: string, newPos: [number, number, number]) => void;
+    leftSidebarOpen: boolean;
+    rightSidebarOpen: boolean;
+    setLeftSidebarOpen: (open: boolean) => void;
+    setRightSidebarOpen: (open: boolean) => void;
+    toggleLeftSidebar: () => void;
+    toggleRightSidebar: () => void;
 }
 
 export const DEFAULT_CANOPY_PARAMETERS: CanopyParameters = {
@@ -96,6 +102,12 @@ export const useDesignStore = create<ExtendedDesignState>((set, get) => ({
     isCategoryModalOpen: true,
     cameraPreset: 'perspective',
     studioLightRotation: 45,
+    leftSidebarOpen: true,
+    rightSidebarOpen: true,
+    setLeftSidebarOpen: (leftSidebarOpen: boolean) => set({ leftSidebarOpen }),
+    setRightSidebarOpen: (rightSidebarOpen: boolean) => set({ rightSidebarOpen }),
+    toggleLeftSidebar: () => set((s) => ({ leftSidebarOpen: !s.leftSidebarOpen })),
+    toggleRightSidebar: () => set((s) => ({ rightSidebarOpen: !s.rightSidebarOpen })),
 
     updateParameters: (newParams: Partial<CanopyParameters>) => {
         set((state) => {

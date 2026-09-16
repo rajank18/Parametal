@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI Image to 3D experimental feature (work-in-progress on branches)
+components/editor/ImageToDesignModal.tsx
+app/api/analyze-image/
+ai_debug_response.json
