@@ -325,7 +325,30 @@ CRITICAL RULES:
     let parsedParameters;
     try {
       parsedParameters = JSON.parse(cleanedJson);
-      console.log('[AI 2-STEP PIPELINE] Step 2 Success! Final Parameters:', parsedParameters);
+      
+      // Normalize activeCategory to prevent invalid category fallthrough
+      const validCategories = ['lamp', 'seating', 'table', 'storage', 'partition', 'wall_mounted', 'sculptural'];
+      
+      if (parsedParameters.geometrySpec && !parsedParameters.sculpturalParameters) {
+        parsedParameters.sculpturalParameters = {
+          objectName: parsedParameters.objectName || 'Custom Parametric Model',
+          height: parsedParameters.geometrySpec.dimensions?.height || 500,
+          baseRadius: 100,
+          waistRadius: 100,
+          neckRadius: 100,
+          wallThickness: 2.0,
+          materialType: parsedParameters.geometrySpec.materialType || 'aluminum',
+          geometrySpec: parsedParameters.geometrySpec,
+        };
+      }
+
+      if (parsedParameters.sculpturalParameters) {
+        parsedParameters.activeCategory = 'sculptural';
+      } else if (!validCategories.includes(parsedParameters.activeCategory)) {
+        parsedParameters.activeCategory = 'sculptural';
+      }
+
+      console.log('[AI 2-STEP PIPELINE] Step 2 Success! Final Normalized Parameters:', parsedParameters);
     } catch (parseErr) {
       console.error('[AI 2-STEP PIPELINE] Failed to parse AI output JSON. Raw Content was:', rawContent);
       return NextResponse.json(

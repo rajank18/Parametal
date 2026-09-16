@@ -89,7 +89,7 @@ export const MetalObject: React.FC = () => {
   const lightPos: [number, number, number] = [-0.22, centerHeightM - 0.12, 0.02];
 
   // Render AI Parametric GeometrySpec
-  if (activeCategory === 'sculptural') {
+  if (activeCategory === 'sculptural' || !['lamp', 'seating', 'table', 'storage', 'partition', 'wall_mounted'].includes(activeCategory)) {
     const parts = sculpturalResult.result?.parts || [];
 
     return (

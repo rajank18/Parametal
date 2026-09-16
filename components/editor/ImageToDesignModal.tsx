@@ -70,11 +70,20 @@ export const ImageToDesignModal: React.FC<{ isOpen: boolean; onClose: () => void
         throw new Error(resData.error || 'Failed to analyze image with AI model.');
       }
 
-      const { activeCategory, parameters, seatingParameters, partitionParameters, sculpturalParameters } = resData.data;
+      const { activeCategory, parameters, seatingParameters, partitionParameters, sculpturalParameters, geometrySpec } = resData.data;
 
-      if (activeCategory) {
-        setActiveCategory(activeCategory);
+      const validCategories = ['lamp', 'seating', 'table', 'storage', 'partition', 'wall_mounted', 'sculptural'];
+      let targetCategory: any = 'sculptural';
+
+      if (activeCategory && validCategories.includes(activeCategory)) {
+        targetCategory = activeCategory;
       }
+
+      if (sculpturalParameters || geometrySpec) {
+        targetCategory = 'sculptural';
+      }
+
+      setActiveCategory(targetCategory);
 
       if (parameters) {
         updateParameters(parameters);
@@ -87,6 +96,8 @@ export const ImageToDesignModal: React.FC<{ isOpen: boolean; onClose: () => void
       }
       if (sculpturalParameters) {
         updateSculpturalParameters(sculpturalParameters);
+      } else if (geometrySpec) {
+        updateSculpturalParameters({ geometrySpec });
       }
 
       setIsLoading(false);

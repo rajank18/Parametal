@@ -108,7 +108,7 @@ export const Viewport: React.FC = () => {
         >
             {/* 3D Canvas */}
             <Canvas
-                shadows
+                shadows={{ type: THREE.PCFShadowMap }}
                 camera={{ position: [1.6, 1.0, 2.1], fov: 45 }}
                 gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
             >
