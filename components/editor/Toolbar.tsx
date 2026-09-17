@@ -75,16 +75,16 @@ export const Toolbar: React.FC = () => {
 
     return (
         <header
-            className={`h-14 sm:h-16 px-3 sm:px-6 flex items-center justify-between select-none z-40 transition-colors backdrop-blur-xl ${
+            className={`h-14 sm:h-16 px-2.5 sm:px-6 flex items-center justify-between select-none z-30 transition-colors backdrop-blur-xl w-full max-w-full overflow-x-hidden ${
                 isDark ? 'bg-black/85 text-white' : 'bg-white/85 text-black'
             }`}
         >
             {/* Brand & Object Category Selector Dropdown */}
-            <div className="flex items-center gap-2 sm:gap-4">
-                {/* Left Sidebar Collapse Toggle */}
+            <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
+                {/* Left Sidebar Collapse Toggle (Desktop) */}
                 <button
                     onClick={toggleLeftSidebar}
-                    className={`p-1.5 sm:p-2 rounded-lg border transition-all ${
+                    className={`hidden md:flex p-1.5 sm:p-2 rounded-lg border transition-all ${
                         leftSidebarOpen
                             ? isDark
                                 ? 'bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800'
@@ -103,25 +103,25 @@ export const Toolbar: React.FC = () => {
                     className="flex items-center gap-1.5 sm:gap-2 group shrink-0"
                     title="Return to Landing Page"
                 >
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
                         <img src="/logo.ico" alt="Parametal Logo" className="w-full h-full object-contain" />
                     </div>
-                    <span className="font-mono text-xl sm:text-2xl font-black uppercase">
+                    <span className="font-mono text-base sm:text-2xl font-black uppercase">
                         PARAMETAL
                     </span>
                 </a>
 
                 {/* Object Dropdown */}
-                <div className="relative" ref={dropdownRef}>
+                <div className="relative shrink-0" ref={dropdownRef}>
                     <button
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-[11px] sm:text-xs font-mono font-bold tracking-wider uppercase transition-all ${isDark
+                        className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-[11px] sm:text-xs font-mono font-bold tracking-wider uppercase transition-all ${isDark
                             ? 'bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800 hover:border-zinc-700'
                             : 'bg-zinc-100 border-zinc-200 text-black hover:bg-zinc-200 hover:border-zinc-300'
                             }`}
                     >
                         <ActiveIcon className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate max-w-[90px] sm:max-w-none">{CATEGORY_ICONS[activeCategory]?.name}</span>
+                        <span className="truncate max-w-[70px] sm:max-w-none">{CATEGORY_ICONS[activeCategory]?.name}</span>
                         <ChevronDown className="w-3 h-3 text-zinc-400 shrink-0" />
                     </button>
 
@@ -179,7 +179,7 @@ export const Toolbar: React.FC = () => {
                 </div>
             </div>
 
-            {/* Camera Presets Selector */}
+            {/* Camera Presets Selector (Desktop) */}
             <div
                 className={`hidden lg:flex items-center gap-1 p-1 rounded-xl border transition-colors ${isDark ? 'bg-zinc-900/90 border-zinc-800' : 'bg-zinc-100 border-zinc-200'
                     }`}
@@ -204,7 +204,7 @@ export const Toolbar: React.FC = () => {
             </div>
 
             {/* View Toggles, Theme Toggle & Actions */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                 <div
                     className={`flex items-center gap-0.5 sm:gap-1 p-0.5 sm:p-1 rounded-lg sm:rounded-xl border transition-colors ${isDark ? 'bg-zinc-900/90 border-zinc-800' : 'bg-zinc-100 border-zinc-200'
                         }`}
@@ -221,12 +221,12 @@ export const Toolbar: React.FC = () => {
                             }`}
                         title="Toggle Wireframe Topology"
                     >
-                        <Box className="w-3.5 h-3.5 inline mr-1" /> <span className="hidden sm:inline">Wireframe</span>
+                        <Box className="w-3.5 h-3.5 inline sm:mr-1" /> <span className="hidden md:inline">Wireframe</span>
                     </button>
 
                     <button
                         onClick={() => setShowHandles(!showHandles)}
-                        className={`p-1 sm:px-2.5 sm:py-1 text-xs font-mono uppercase tracking-wider rounded-lg font-medium transition-all ${showHandles
+                        className={`p-1 sm:px-2.5 sm:py-1 text-xs font-mono uppercase tracking-wider rounded-md sm:rounded-lg font-medium transition-all ${showHandles
                             ? isDark
                                 ? 'bg-white text-black font-bold'
                                 : 'bg-black text-white font-bold'
@@ -236,12 +236,12 @@ export const Toolbar: React.FC = () => {
                             }`}
                         title="Toggle 3D Control Point Gizmos"
                     >
-                        <Target className="w-3.5 h-3.5 inline mr-1" /> <span className="hidden sm:inline">3D Handles</span>
+                        <Target className="w-3.5 h-3.5 inline sm:mr-1" /> <span className="hidden md:inline">3D Handles</span>
                     </button>
 
                     <button
                         onClick={() => setShowReferenceOverlay(!showReferenceOverlay)}
-                        className={`p-1 sm:px-2.5 sm:py-1 text-xs font-mono uppercase tracking-wider rounded-lg font-medium transition-all ${showReferenceOverlay
+                        className={`hidden sm:flex items-center p-1 sm:px-2.5 sm:py-1 text-xs font-mono uppercase tracking-wider rounded-md sm:rounded-lg font-medium transition-all ${showReferenceOverlay
                             ? isDark
                                 ? 'bg-white text-black font-bold'
                                 : 'bg-black text-white font-bold'
@@ -276,13 +276,13 @@ export const Toolbar: React.FC = () => {
                     title="Download 3D View Image (PNG)"
                 >
                     <Download className="w-3.5 h-3.5 shrink-0" />
-                    <span className="hidden sm:inline">Capture</span>
+                    <span className="hidden md:inline">Capture</span>
                 </button>
 
-                {/* Right Sidebar Collapse Toggle */}
+                {/* Right Sidebar Collapse Toggle (Desktop) */}
                 <button
                     onClick={toggleRightSidebar}
-                    className={`p-1.5 sm:p-2 rounded-lg border transition-all ${
+                    className={`hidden md:flex p-1.5 sm:p-2 rounded-lg border transition-all ${
                         rightSidebarOpen
                             ? isDark
                                 ? 'bg-zinc-900 border-zinc-800 text-white hover:bg-zinc-800'

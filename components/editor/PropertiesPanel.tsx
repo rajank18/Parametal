@@ -51,7 +51,7 @@ export const PropertiesPanel: React.FC = () => {
 
   return (
     <div
-      className={`w-72 h-full flex flex-col select-none z-10 transition-colors border-l backdrop-blur-md ${
+      className={`w-full h-full flex flex-col select-none z-10 transition-colors border-l backdrop-blur-md ${
         isDark ? 'bg-zinc-950/80 border-zinc-800 text-white' : 'bg-white/80 border-zinc-200 text-black'
       }`}
     >
